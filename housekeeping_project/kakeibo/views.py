@@ -1,11 +1,14 @@
-from django.views import generic
+from django.views import generic # ジェネリックビュー
 from django.urls import reverse_lazy
-from django.contrib import messages
+from django.contrib import messages # システムメッセージ
 from django.shortcuts import redirect
+import numpy as np # グラフ
+import pandas as pd # グラフ
+from django_pandas.io import read_frame # グラフ
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory
 from .forms import PaymentSearchForm, IncomeSearchForm, PaymentCreateForm, IncomeCreateForm
-
+from .plugin_plotly import GraphGenerator # グラフ
 
 class PaymentList(generic.ListView):
     template_name = 'kakeibo/payment_list.html'
@@ -225,3 +228,75 @@ class IncomeDelete(generic.DeleteView):  # 収入削除
                       f'カテゴリ:{income.category}\n'
                       f'金額:{income.price}円')
         return redirect(self.get_success_url())
+
+
+class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
+    template_name = 'kakeibo/month_dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # これから表示する年月
+        year = int(self.kwargs.get('year'))
+        month = int(self.kwargs.get('month'))
+        context['year_month'] = f'{year}年{month}月'
+
+        # 前月と次月をコンテキストに入れて渡す
+        if month == 1:
+            prev_year = year - 1
+            prev_month = 12
+        else:
+            prev_year = year
+            prev_month = month - 1
+
+        if month == 12:
+            next_year = year + 1
+            next_month = 1
+        else:
+            next_year = year
+            next_month = month + 1
+        context['prev_year'] = prev_year
+        context['prev_month'] = prev_month
+        context['next_year'] = next_year
+        context['next_month'] = next_month
+
+        # paymentモデルQuerySetをデータフレームにする
+        queryset = Payment.objects.filter(date__year=year)
+        queryset = queryset.filter(date__month=month)
+
+        # 後の工程でエラーになるため
+        if not queryset:
+            return context # QuerySetが何もない時はcontextを返す
+
+        # paymentモデルをpandasデータフレーム化
+        df = read_frame(queryset,
+                        fieldnames=['date', 'price', 'category'])
+
+        # グラフ作成クラスをインスタンス化
+        gen = GraphGenerator()
+
+        # pieチャートの素材を作成
+        # カテゴリー毎に金額をpivot集計
+        df_pie = pd.pivot_table(df, index='category', values='price', aggfunc=np.sum)
+        # カテゴリー情報をdf.index.valuesで取り出してリスト化
+        pie_labels = list(df_pie.index.values)
+        # 金額情報をdf.valuesで取り出してディクショナリ化
+        pie_values = [val[0] for val in df_pie.values]
+
+        plot_pie = gen.month_pie(labels=pie_labels, values=pie_values)
+        context['plot_pie'] = plot_pie
+
+        # テーブルでのカテゴリと金額の表示用。
+        # {カテゴリ:金額,カテゴリ:金額…}の辞書を作る
+        context['table_set'] = df_pie.to_dict()['price']
+
+        # totalの数字を計算して渡す
+        context['total_payment'] = df['price'].sum()
+
+        # 日別の棒グラフの素材を渡す
+        df_bar = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum)
+        dates = list(df_bar.index.values)
+        heights = [val[0] for val in df_bar.values]
+        plot_bar = gen.month_daily_bar(x_list=dates, y_list=heights)
+        context['plot_bar'] = plot_bar
+
+        return context

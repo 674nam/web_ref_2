@@ -1,0 +1,14 @@
+{% extends 'kakeibo/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="month-pager">
+  <a href="{% url 'kakeibo:month_dashboard' prev_year prev_month %}">
+    前月
+  </a>
+  <span class="ml-4 mr-4">{{ year_month }}</span>
+  <a href="{% url 'kakeibo:month_dashboard' next_year next_month %}">
+    次月
+  </a>
+</div>
+{% endblock%}
