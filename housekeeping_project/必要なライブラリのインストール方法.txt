@@ -1,0 +1,14 @@
+インストールコマンド：pip install ライブラリ名
+
+●QuerysetからDataFrameへ変換するライブラリ
+django-pandas
+pandas
+
+●インタラクティブなグラフ描画ライブラリ
+plotly
+
+●adminと統合してデータのインポート、エクスポートを行うライブラリ
+django-import-export
+
+＜requirements.txt記載のライブラリを一括でインストールする場合＞
+インストールコマンド：pip install -r requirements.txt

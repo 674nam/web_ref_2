@@ -1,0 +1,51 @@
+{% extends 'kakeibo/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<form class="mt-2" id="search-form" action="" method="GET">
+  <div>
+    <label class="label mr-4">年月</label>
+    {{ search_form.year }}
+    {{ search_form.month }}
+  </div>
+  <div class="mt-4">
+    <label class="label mr-4">金額</label>
+    {{ search_form.greater_than }}
+    <span class="ml-4 mr-4">～</span>
+    {{ search_form.less_than }}
+  </div>
+  <div class="mt-4">
+    {{ search_form.key_word }}
+    <button class="btn btn-info ml-4" type="submit">検索</button>
+  </div>
+  <div class="mt-2 inline">
+    {{ search_form.category }}
+  </div>
+</form>
+
+<table class="table mt-3">
+  <tr>
+    <th>日付</th>
+    <th>カテゴリ</th>
+    <th>金額</th>
+    <th>摘要</th>
+  </tr>
+  {% for payment in payment_list %}
+  <tr>
+    <td>{{ payment.date }}</td>
+    <td>{{ payment.category }}</td>
+    <td>{{ payment.price|intcomma}}</td>
+    <td>
+      {% if payment.description %}
+      {{ payment.description }}
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<div class="mt-5">
+  <h1>ページネーション予定位置</h1>
+</div>
+
+{% endblock %}
