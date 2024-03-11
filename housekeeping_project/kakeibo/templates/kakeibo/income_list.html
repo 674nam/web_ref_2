@@ -15,6 +15,7 @@
     <th>カテゴリ</th>
     <th>金額</th>
     <th>摘要</th>
+    <th>編集</th>
   </tr>
   {% for income in income_list %}
 
@@ -27,6 +28,18 @@
       {{ income.description }}
       {% endif %}
     </td>
+
+    <td>
+      <div class="manage-btn-area">
+        <div class="update-btn-area">
+          <a class="btn btn-info" href="{% url 'kakeibo:income_update' income.pk %}">更新</a>
+        </div>
+        <div class="delete-btn-area">
+          <a class="btn btn-danger" href="{% url 'kakeibo:income_delete' income.pk %}">削除</a>
+        </div>
+      </div>
+    </td>
+
   </tr>
   {% endfor %}
 </table>

@@ -39,7 +39,7 @@ a {
 
 a:hover {
   opacity: .7;
-} 
+}
 
 /* --------------------------------
  * レイアウト・コンテナ
@@ -282,6 +282,38 @@ a.header-title {
 .btn-info, a.btn-info {
   background-color: #39c0ed;
   color: #fff;
+}
+
+.btn-danger, a.btn-danger {
+  background-color: #f93154;
+  color: #fff;
+}
+
+/* --------------------------------
+ * 一覧ページのボタン部分
+ * -------------------------------- */
+
+ /* 通常は横並び */
+.manage-btn-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.delete-btn-area {
+  margin-left: 5px;
+}
+
+/* 760px以下は縦並び */
+@media (max-width: 760px) {
+  .manage-btn-area {
+    flex-direction: column;
+  }
+
+  .delete-btn-area {
+    margin-left: 0px;
+    margin-top: 5px;
+  }
 }
 
 /* --------------------------------
