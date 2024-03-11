@@ -1,4 +1,5 @@
 # # django-import-export 不使用バージョン
+# # settings.pyのINSTALLED_APPSから'import-export'を削除orコメントアウト
 # from django.contrib import admin
 # from .models import Payment, Income, PaymentCategory, IncomeCategory
 
@@ -21,6 +22,7 @@
 
 # django-import-export 使用バージョン
 # 管理サイトからデータのインポート、エクスポートを可能にする
+# settings.pyのINSTALLED_APPSに'import-export'を追加
 from django.contrib import admin
 from .models import Payment, Income, PaymentCategory, IncomeCategory
 from import_export import resources  # django-import-export のインストールが必要

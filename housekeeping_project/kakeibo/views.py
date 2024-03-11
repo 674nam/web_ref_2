@@ -1,14 +1,16 @@
 from django.views import generic
+from django.urls import reverse_lazy
+from django.contrib import messages
+from django.shortcuts import redirect
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory
-from .forms import PaymentSearchForm, IncomeSearchForm # 検索フォーム用
+from .forms import PaymentSearchForm, IncomeSearchForm, PaymentCreateForm, IncomeCreateForm
 
 
 class PaymentList(generic.ListView):
     template_name = 'kakeibo/payment_list.html'
     model = Payment
     ordering = '-date'
-    # paginate_by = 5 # ページネーション作成中
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -61,7 +63,6 @@ class IncomeList(generic.ListView):
     template_name = 'kakeibo/income_list.html'
     model = Income
     ordering = '-date'
-    # paginate_by = 5 # ページネーション作成中
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -83,3 +84,49 @@ class IncomeList(generic.ListView):
         context['search_form'] = self.form
 
         return context
+
+
+class PaymentCreate(generic.CreateView): # 支出登録
+    template_name = 'kakeibo/register.html'
+    model = Payment
+    form_class = PaymentCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = '支出登録'
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('kakeibo:payment_list')
+
+    def form_valid(self, form):
+        self.object = payment = form.save()
+        messages.info(self.request,
+                      f'支出を登録しました\n'
+                      f'日付:{payment.date}\n'
+                      f'カテゴリ:{payment.category}\n'
+                      f'金額:{payment.price}円')
+        return redirect(self.get_success_url())
+
+
+class IncomeCreate(generic.CreateView): # 収入登録
+    template_name = 'kakeibo/register.html'
+    model = Income
+    form_class = IncomeCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = '収入登録'
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('kakeibo:income_list')
+
+    def form_valid(self, form):
+        self.object = income = form.save()
+        messages.info(self.request,
+                        f'収入を登録しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
+        return redirect(self.get_success_url())

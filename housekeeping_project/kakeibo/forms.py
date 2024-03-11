@@ -1,5 +1,5 @@
 from django import forms
-from .models import PaymentCategory
+from .models import PaymentCategory, Payment, Income
 from django.utils import timezone
 
 class PaymentSearchForm(forms.Form): # 支出検索フォーム
@@ -65,7 +65,7 @@ class PaymentSearchForm(forms.Form): # 支出検索フォーム
         label='カテゴリでの絞り込み',
         required=False,
         queryset=PaymentCategory.objects.order_by('name'),
-        widget=forms.Select(attrs={'class': 'form'})
+        widget=forms.Select(attrs={'class': 'form'}),
     )
 
 
@@ -93,3 +93,28 @@ class IncomeSearchForm(forms.Form):
         choices=MONTH_CHOICES,
         widget=forms.Select(attrs={'class': 'form'})
     )
+
+class PaymentCreateForm(forms.ModelForm): # 支出登録フォーム
+    class Meta:
+        model = Payment
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form'
+            field.widget.attrs['placeholder'] = field.label
+            field.widget.attrs['autocomplete'] = 'off'
+
+
+class IncomeCreateForm(forms.ModelForm): # 収入登録フォーム
+    class Meta:
+        model = Income
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form'
+            field.widget.attrs['placeholder'] = field.label
+            field.widget.attrs['autocomplete'] = 'off'
