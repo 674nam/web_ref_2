@@ -11,21 +11,23 @@ from .forms import PaymentSearchForm, IncomeSearchForm, PaymentCreateForm, Incom
 from .plugin_plotly import GraphGenerator # グラフ
 
 class PaymentList(generic.ListView):
-    template_name = 'kakeibo/payment_list.html'
-    model = Payment
+    template_name = 'kakeibo/payment_list.html' # レンダリングするテンプレート
+    model = Payment # Paymentモデルのレコードを渡す {{payment_list}}もしくは{{object_list}}
     ordering = '-date'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset() # PaymentList.objects.all()と同等
         self.form = form = PaymentSearchForm(self.request.GET or None)
 
-        if form.is_valid():
-            year = form.cleaned_data.get('year')
-            # 選択なし -> 文字列'0'が入るため除外
+        if form.is_valid(): # バリデーションチェック
+            # form.cleaned_data：バリデーションをクリアしたデータのみをディクショナリに格納
+            year = form.cleaned_data.get('year') # 'year'キーで値を取り出す
+
+            # 選択なし：文字列'0'が入るため除外
             if year and year != '0':
                 queryset = queryset.filter(date__year=year)
 
-            # 選択なし -> 文字列'0'が入るため除外
+            # 選択なし：文字列'0'が入るため除外
             month = form.cleaned_data.get('month')
             if month and month != '0':
                 queryset = queryset.filter(date__month=month)
@@ -55,11 +57,11 @@ class PaymentList(generic.ListView):
 
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['search_form'] = self.form  # search formを渡す
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs)  # 親クラスの get_context_dataメソッドを実行
+        context['search_form'] = self.form  # search_form変数をcontextに追加
 
-        return context
+        return context # テンプレートをcontextに渡す{{ search_form }}で使用
 
 
 class IncomeList(generic.ListView):
@@ -94,9 +96,9 @@ class PaymentCreate(generic.CreateView): # 支出登録
     model = Payment
     form_class = PaymentCreateForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = '支出登録'
+    def get_context_data(self, **kwargs): #オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '支出登録' # contextに追加
         return context
 
     def get_success_url(self):
@@ -105,10 +107,10 @@ class PaymentCreate(generic.CreateView): # 支出登録
     def form_valid(self, form):
         self.object = payment = form.save()
         messages.info(self.request,
-                      f'支出を登録しました\n'
-                      f'日付:{payment.date}\n'
-                      f'カテゴリ:{payment.category}\n'
-                      f'金額:{payment.price}円')
+                        f'支出を登録しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
 
@@ -140,9 +142,9 @@ class PaymentUpdate(generic.UpdateView): # 支出更新
     model = Payment
     form_class = PaymentCreateForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = '支出更新'
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '支出更新' # contextに追加
         return context
 
     def get_success_url(self):
@@ -151,10 +153,10 @@ class PaymentUpdate(generic.UpdateView): # 支出更新
     def form_valid(self, form):
         self.object = payment = form.save()
         messages.info(self.request,
-                      f'支出を更新しました\n'
-                      f'日付:{payment.date}\n'
-                      f'カテゴリ:{payment.category}\n'
-                      f'金額:{payment.price}円')
+                        f'支出を更新しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
 
@@ -174,10 +176,10 @@ class IncomeUpdate(generic.UpdateView): # 収入更新
     def form_valid(self, form):
         self.object = income = form.save()
         messages.info(self.request,
-                      f'収入を更新しました\n'
-                      f'日付:{income.date}\n'
-                      f'カテゴリ:{income.category}\n'
-                      f'金額:{income.price}円')
+                        f'収入を更新しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
 
@@ -188,9 +190,9 @@ class PaymentDelete(generic.DeleteView): # 支出削除
     def get_success_url(self):
         return reverse_lazy('kakeibo:payment_list')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = '支出削除確認'
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '支出削除確認' # contextに追加
 
         return context
 
@@ -199,10 +201,10 @@ class PaymentDelete(generic.DeleteView): # 支出削除
 
         payment.delete()
         messages.info(self.request,
-                      f'支出を削除しました\n'
-                      f'日付:{payment.date}\n'
-                      f'カテゴリ:{payment.category}\n'
-                      f'金額:{payment.price}円')
+                        f'支出を削除しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
 
@@ -223,24 +225,25 @@ class IncomeDelete(generic.DeleteView):  # 収入削除
         self.object = income = self.get_object()
         income.delete()
         messages.info(self.request,
-                      f'収入を削除しました\n'
-                      f'日付:{income.date}\n'
-                      f'カテゴリ:{income.category}\n'
-                      f'金額:{income.price}円')
+                        f'収入を削除しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
 
 class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
     template_name = 'kakeibo/month_dashboard.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+
         # これから表示する年月
         year = int(self.kwargs.get('year'))
         month = int(self.kwargs.get('month'))
-        context['year_month'] = f'{year}年{month}月'
+        context['year_month'] = f'{year}年{month}月' # contextに追加
 
-        # 前月と次月をコンテキストに入れて渡す
+        # 前月と次月をcontextに追加
         if month == 1:
             prev_year = year - 1
             prev_month = 12
@@ -254,48 +257,44 @@ class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
         else:
             next_year = year
             next_month = month + 1
-        context['prev_year'] = prev_year
+        context['prev_year'] = prev_year   # contextに追加
         context['prev_month'] = prev_month
         context['next_year'] = next_year
         context['next_month'] = next_month
 
-        # paymentモデルQuerySetをデータフレームにする
+        # PaymentモデルのQuerySetを取り出す
         queryset = Payment.objects.filter(date__year=year)
         queryset = queryset.filter(date__month=month)
-
-        # 後の工程でエラーになるため
+        # 後の工程のエラー対策
         if not queryset:
             return context # QuerySetが何もない時はcontextを返す
 
-        # paymentモデルをpandasデータフレーム化
+        # 取り出したQuerySetをpandasデータフレーム(df)化
         df = read_frame(queryset,
                         fieldnames=['date', 'price', 'category'])
-
-        # グラフ作成クラスをインスタンス化
+        # plugin_plotly.py記載のグラフ作成クラスをインスタンス化
         gen = GraphGenerator()
 
-        # pieチャートの素材を作成
-        # カテゴリー毎に金額をpivot集計
+        # pieチャートの素材
+        # カテゴリー毎に金額をピボット集計
         df_pie = pd.pivot_table(df, index='category', values='price', aggfunc=np.sum)
-        # カテゴリー情報をdf.index.valuesで取り出してリスト化
+        # カテゴリー情報をdf_pie.index.valuesで取り出してリスト化
         pie_labels = list(df_pie.index.values)
-        # 金額情報をdf.valuesで取り出してディクショナリ化
+        # 金額情報をdf_pie.valuesで取り出してディクショナリ化
         pie_values = [val[0] for val in df_pie.values]
-
         plot_pie = gen.month_pie(labels=pie_labels, values=pie_values)
         context['plot_pie'] = plot_pie
 
-        # テーブルでのカテゴリと金額の表示用。
-        # {カテゴリ:金額,カテゴリ:金額…}の辞書を作る
+        # テーブルでのカテゴリと金額の表示
+        # ディクショナリ{カテゴリ:金額,カテゴリ:金額…}をcontextに追加
         context['table_set'] = df_pie.to_dict()['price']
-
-        # totalの数字を計算して渡す
+        # totalの数字を計算してcontextに追加
         context['total_payment'] = df['price'].sum()
 
-        # 日別の棒グラフの素材を渡す
-        df_bar = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum)
-        dates = list(df_bar.index.values)
-        heights = [val[0] for val in df_bar.values]
+        # 日別棒グラフの素材
+        df_bar = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
+        dates = list(df_bar.index.values) # 日付情報をリスト化
+        heights = [val[0] for val in df_bar.values] # 金額情報をディクショナリ化
         plot_bar = gen.month_daily_bar(x_list=dates, y_list=heights)
         context['plot_bar'] = plot_bar
 
