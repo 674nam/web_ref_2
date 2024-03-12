@@ -7,9 +7,12 @@ import pandas as pd # グラフ
 from django_pandas.io import read_frame # グラフ
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory
-from .forms import PaymentSearchForm, IncomeSearchForm, PaymentCreateForm, IncomeCreateForm
+from .forms import PaymentSearchForm, IncomeSearchForm,\
+                    PaymentCreateForm, IncomeCreateForm,\
+                    TransitionGraphSearchForm
 from .plugin_plotly import GraphGenerator # グラフ
 
+# 支出一覧
 class PaymentList(generic.ListView):
     template_name = 'kakeibo/payment_list.html' # レンダリングするテンプレート
     model = Payment # Paymentモデルのレコードを渡す {{payment_list}}もしくは{{object_list}}
@@ -63,7 +66,7 @@ class PaymentList(generic.ListView):
 
         return context # テンプレートをcontextに渡す{{ search_form }}で使用
 
-
+# 収入一覧
 class IncomeList(generic.ListView):
     template_name = 'kakeibo/income_list.html'
     model = Income
@@ -90,8 +93,8 @@ class IncomeList(generic.ListView):
 
         return context
 
-
-class PaymentCreate(generic.CreateView): # 支出登録
+# 支出登録
+class PaymentCreate(generic.CreateView):
     template_name = 'kakeibo/register.html'
     model = Payment
     form_class = PaymentCreateForm
@@ -113,8 +116,8 @@ class PaymentCreate(generic.CreateView): # 支出登録
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
-
-class IncomeCreate(generic.CreateView): # 収入登録
+# 収入登録
+class IncomeCreate(generic.CreateView):
     template_name = 'kakeibo/register.html'
     model = Income
     form_class = IncomeCreateForm
@@ -136,8 +139,8 @@ class IncomeCreate(generic.CreateView): # 収入登録
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
-
-class PaymentUpdate(generic.UpdateView): # 支出更新
+# 支出更新
+class PaymentUpdate(generic.UpdateView):
     template_name = 'kakeibo/register.html'
     model = Payment
     form_class = PaymentCreateForm
@@ -159,8 +162,8 @@ class PaymentUpdate(generic.UpdateView): # 支出更新
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
-
-class IncomeUpdate(generic.UpdateView): # 収入更新
+# 収入更新
+class IncomeUpdate(generic.UpdateView):
     template_name = 'kakeibo/register.html'
     model = Income
     form_class = IncomeCreateForm
@@ -182,8 +185,8 @@ class IncomeUpdate(generic.UpdateView): # 収入更新
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
-
-class PaymentDelete(generic.DeleteView): # 支出削除
+# 支出削除
+class PaymentDelete(generic.DeleteView):
     template_name = 'kakeibo/delete.html'
     model = Payment
 
@@ -207,8 +210,8 @@ class PaymentDelete(generic.DeleteView): # 支出削除
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
-
-class IncomeDelete(generic.DeleteView):  # 収入削除
+# 収入削除
+class IncomeDelete(generic.DeleteView):
     template_name = 'kakeibo/delete.html'
     model = Income
 
@@ -231,8 +234,8 @@ class IncomeDelete(generic.DeleteView):  # 収入削除
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
-
-class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
+# 月間支出ダッシュボード
+class MonthDashboard(generic.TemplateView):
     template_name = 'kakeibo/month_dashboard.html'
 
     def get_context_data(self, **kwargs): # オーバーライド
@@ -272,21 +275,21 @@ class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
         # 取り出したQuerySetをpandasデータフレーム(df)化
         df = read_frame(queryset,
                         fieldnames=['date', 'price', 'category'])
-        # plugin_plotly.py記載のグラフ作成クラスをインスタンス化
+        # plugin_plotly.pyのクラスでインスタンスを作成
         gen = GraphGenerator()
 
         # pieチャートの素材
-        # カテゴリー毎に金額をピボット集計
+        # カテゴリー毎に金額をpivot集計
         df_pie = pd.pivot_table(df, index='category', values='price', aggfunc=np.sum)
         # カテゴリー情報をdf_pie.index.valuesで取り出してリスト化
         pie_labels = list(df_pie.index.values)
         # 金額情報をdf_pie.valuesで取り出してディクショナリ化
         pie_values = [val[0] for val in df_pie.values]
-        plot_pie = gen.month_pie(labels=pie_labels, values=pie_values)
-        context['plot_pie'] = plot_pie
+        plot_pie = gen.month_pie(labels=pie_labels, values=pie_values) # genインスタンスmonth_pieメソッド
+        context['plot_pie'] = plot_pie # contextに追加
 
-        # テーブルでのカテゴリと金額の表示
-        # ディクショナリ{カテゴリ:金額,カテゴリ:金額…}をcontextに追加
+        # テーブルでのカテゴリと集計金額の表示
+        # ディクショナリ{カテゴリ:集計金額, カテゴリ:集計金額…}をcontextに追加
         context['table_set'] = df_pie.to_dict()['price']
         # totalの数字を計算してcontextに追加
         context['total_payment'] = df['price'].sum()
@@ -297,5 +300,124 @@ class MonthDashboard(generic.TemplateView): # 月間支出ダッシュボード
         heights = [val[0] for val in df_bar.values] # 金額情報をディクショナリ化
         plot_bar = gen.month_daily_bar(x_list=dates, y_list=heights)
         context['plot_bar'] = plot_bar
+
+        return context
+
+# # 月毎の収支推移：絞り込み機能なし
+# class TransitionView(generic.TemplateView):
+#     template_name = 'kakeibo/transition.html'
+
+#     def get_context_data(self, **kwargs): # オーバーライド
+#         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+#         payment_queryset = Payment.objects.all()
+#         income_queryset = Income.objects.all()
+#         # データフレーム(df)化
+#         payment_df = read_frame(payment_queryset,
+#                                 fieldnames=['date', 'price'])
+#         # 日付カラムをdatetime化して、Y-m表記に変換
+#         payment_df['date'] = pd.to_datetime(payment_df['date'])
+#         payment_df['month'] = payment_df['date'].dt.strftime('%Y-%m')
+#         # monthカラムでpivot集計
+#         payment_df = pd.pivot_table(payment_df, index='month', values='price', aggfunc=np.sum)
+#         # x軸
+#         months_payment = list(payment_df.index.values)
+#         # y軸
+#         payments = [y[0] for y in payment_df.values]
+
+#         # 収入も同様
+#         income_df = read_frame(income_queryset,
+#                                 fieldnames=['date', 'price'])
+#         income_df['date'] = pd.to_datetime(income_df['date'])
+#         income_df['month'] = income_df['date'].dt.strftime('%Y-%m')
+#         income_df = pd.pivot_table(income_df, index='month', values='price', aggfunc=np.sum)
+#         months_income = list(income_df.index.values)
+#         incomes = [y[0] for y in income_df.values]
+
+#         # plugin_plotly.pyのクラスでインスタンスを生成
+#         gen = GraphGenerator()
+#         context['transition_plot'] = gen.transition_plot(
+#                                         x_list_payment=months_payment,
+#                                         y_list_payment=payments,
+#                                         x_list_income=months_income,
+#                                         y_list_income=incomes
+#                                         )
+#         return context
+
+
+# 月毎の収支推移：絞り込み機能付き
+# 支出のみ、収入のみのグラフを表示
+# 支出、収入それぞれにおいてカテゴリを単一で表示
+# 検索実行⇒クエリを絞り込みデータフレーム化⇒グラフ生成
+class TransitionView(generic.TemplateView):
+
+    template_name = 'kakeibo/transition.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        payment_queryset = Payment.objects.all()
+        income_queryset = Income.objects.all()
+        self.form = form = TransitionGraphSearchForm(self.request.GET or None)
+        context['search_form'] = self.form
+
+        graph_visible = None
+        # 表示の切り替えでplotlyに渡すデータ
+        months_payment = None
+        payments = None
+        months_income = None
+        incomes = None
+
+        if form.is_valid(): # バリデーションチェック
+            # 支出カテゴリーで絞り込む
+            payment_category = form.cleaned_data.get('payment_category')
+            if payment_category:
+                payment_queryset = payment_queryset.filter(category=payment_category)
+            # 収入カテゴリーで絞り込む
+            income_category = form.cleaned_data.get('income_category')
+            if income_category:
+                income_queryset = income_queryset.filter(category=income_category)
+            # 表示グラフ
+            graph_visible = form.cleaned_data.get('graph_visible')
+
+        # グラフ表示指定がない、もしくは支出グラフ表示を選択
+        if not graph_visible or graph_visible == 'Payment':
+            payment_df = read_frame(payment_queryset,
+                                    fieldnames=['date', 'price'])
+            payment_df['date'] = pd.to_datetime(payment_df['date'])
+            payment_df['month'] = payment_df['date'].dt.strftime('%Y-%m')
+            payment_df = pd.pivot_table(
+                                        payment_df,
+                                        index='month',
+                                        values='price',
+                                        aggfunc=np.sum
+                                        )
+            months_payment = list(payment_df.index.values)
+            payments = [y[0] for y in payment_df.values]
+
+        # グラフ表示指定がない、もしくは収入グラフ表示を選択
+        if not graph_visible or graph_visible == 'Income':
+            income_df = read_frame(income_queryset,
+                                    fieldnames=['date', 'price'])
+            income_df['date'] = pd.to_datetime(income_df['date'])
+            income_df['month'] = income_df['date'].dt.strftime('%Y-%m')
+            income_df = pd.pivot_table(
+                                        income_df,
+                                        index='month',
+                                        values='price',
+                                        aggfunc=np.sum
+                                        )
+            months_income = list(income_df.index.values)
+            incomes = [y[0] for y in income_df.values]
+
+        # plugin_plotly.pyのクラスでインスタンスを生成
+        gen = GraphGenerator()
+        # if条件分岐（表示グラフ選択）により書換えられた値 または None が入った
+        # months_payment、payments、months_income、incomes
+        # を引数として渡し、グラフを作成する（Noneが渡されたグラフは作成されない）
+        context['transition_plot'] = gen.transition_plot(
+                                        x_list_payment=months_payment,
+                                        y_list_payment=payments,
+                                        x_list_income=months_income,
+                                        y_list_income=incomes
+                                        )
 
         return context

@@ -410,3 +410,11 @@ a.header-title {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
   padding: 10px;
 }
+
+/* --------------------------------
+ * 収支推移ページ
+ * -------------------------------- */
+.section-title {
+  font-size: 1.4rem;
+  color: #888;
+}

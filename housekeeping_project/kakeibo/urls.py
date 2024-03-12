@@ -17,4 +17,6 @@ urlpatterns = [
     path('income_delete/<int:pk>/', views.IncomeDelete.as_view(), name='income_delete'),
     # グラフ：月間支出ダッシュボード
     path('month_dashboard/<int:year>/<int:month>/', views.MonthDashboard.as_view(), name='month_dashboard'),
+    # グラフ：月毎の収支推移
+    path('transition/', views.TransitionView.as_view(), name='transition'),
 ]

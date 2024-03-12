@@ -1,8 +1,9 @@
 from django import forms
-from .models import PaymentCategory, Payment, Income
+from .models import PaymentCategory, Payment, Income, IncomeCategory
 from django.utils import timezone
 
-class PaymentSearchForm(forms.Form): # 支出検索フォーム
+# 支出検索フォーム
+class PaymentSearchForm(forms.Form):
 
     # 年の選択肢を動的に作る
     start_year = 2019  # 家計簿の登録を始めた年
@@ -36,28 +37,30 @@ class PaymentSearchForm(forms.Form): # 支出検索フォーム
     greater_than = forms.IntegerField(
         label='Greater Than',
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form',
-                                      'autocomplete': 'off',
-                                      'placeholder': '〇〇円以上'})
+        widget=forms.TextInput(attrs={
+                    'class': 'form',
+                    'autocomplete': 'off',
+                    'placeholder': '〇〇円以上'})
     )
 
     # 〇〇円以下
     less_than = forms.IntegerField(
         label='Less Than',
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form',
-                                      'autocomplete': 'off',
-                                      'placeholder': '〇〇円以下'})
+        widget=forms.TextInput(attrs={
+                    'class': 'form',
+                    'autocomplete': 'off',
+                    'placeholder': '〇〇円以下'})
     )
 
     # キーワード
     key_word = forms.CharField(
         label='検索キーワード',
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form',
-                                      'autocomplete': 'off',
-                                      'placeholder': 'キーワード',
-                                      })
+        widget=forms.TextInput(attrs={
+                    'class': 'form',
+                    'autocomplete': 'off',
+                    'placeholder': 'キーワード',})
     )
 
     # カテゴリー検索
@@ -68,7 +71,7 @@ class PaymentSearchForm(forms.Form): # 支出検索フォーム
         widget=forms.Select(attrs={'class': 'form'}),
     )
 
-
+# 収入検索フォーム
 class IncomeSearchForm(forms.Form):
     start_year = 2019
     end_year = timezone.now().year + 1
@@ -86,7 +89,6 @@ class IncomeSearchForm(forms.Form):
         choices=YEAR_CHOICES,
         widget=forms.Select(attrs={'class': 'form', 'value': ''})
     )
-
     month = forms.ChoiceField(
         label='月での絞り込み',
         required=False,
@@ -94,7 +96,8 @@ class IncomeSearchForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form'})
     )
 
-class PaymentCreateForm(forms.ModelForm): # 支出登録フォーム
+# 支出登録フォーム
+class PaymentCreateForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = '__all__'
@@ -106,8 +109,8 @@ class PaymentCreateForm(forms.ModelForm): # 支出登録フォーム
             field.widget.attrs['placeholder'] = field.label
             field.widget.attrs['autocomplete'] = 'off'
 
-
-class IncomeCreateForm(forms.ModelForm): # 収入登録フォーム
+# 収入登録フォーム
+class IncomeCreateForm(forms.ModelForm):
     class Meta:
         model = Income
         fields = '__all__'
@@ -118,3 +121,31 @@ class IncomeCreateForm(forms.ModelForm): # 収入登録フォーム
             field.widget.attrs['class'] = 'form'
             field.widget.attrs['placeholder'] = field.label
             field.widget.attrs['autocomplete'] = 'off'
+
+# 推移グラフの絞り込みフォーム
+class TransitionGraphSearchForm(forms.Form):
+    SHOW_CHOICES = (
+        ('Payment', 'Payment'),
+        ('Income', 'Income'),
+    )
+
+    payment_category = forms.ModelChoiceField(
+        label='支出カテゴリでの絞り込み',
+        required=False,
+        queryset=PaymentCategory.objects.order_by('name'),
+        # widget=CustomRadioSelect,
+    )
+
+    income_category = forms.ModelChoiceField(
+        label='収入カテゴリでの絞り込み',
+        required=False,
+        queryset=IncomeCategory.objects.order_by('name'),
+        # widget=CustomRadioSelect,
+    )
+
+    graph_visible = forms.ChoiceField(
+                        required=False,
+                        label='表示グラフ',
+                        choices=SHOW_CHOICES,
+                    #   widget=CustomRadioSelect
+                        )
