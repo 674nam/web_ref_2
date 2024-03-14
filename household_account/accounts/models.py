@@ -57,7 +57,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("email"),
         unique=True
     )
-
     family_name = models.ForeignKey(
         Family,
         verbose_name=_("家名"),
@@ -65,7 +64,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         default=None  # デフォルト値
     )
-
     first_name = models.CharField(
         verbose_name=_("名前"),
         max_length=150,
@@ -101,4 +99,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.account_id
-

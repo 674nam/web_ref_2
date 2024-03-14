@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin): # 管理者画面
     exclude = ("username", )
 
     fieldsets = (
-        (None, {"fields": ("account_id", "email", "family_name", "first_name",
+        (None, {"fields": ("account_id", "email", "first_name", "family_name",
                             "is_active", "created_at", "updated_at")}),
         ("Permissions", {"fields": ("is_superuser", "is_staff", "user_permissions")}),
     )
