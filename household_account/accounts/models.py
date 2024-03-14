@@ -40,6 +40,7 @@ class Family(models.Model):
     family_name = models.CharField(
             verbose_name=_("家名"),
             max_length=150,
+            unique=True,
             null=True,
             blank=False
         )

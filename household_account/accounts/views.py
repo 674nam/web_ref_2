@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView, LogoutView as 
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from .forms import SignUpForm, LoginForm #, Family_registerForm
+from .forms import SignUpForm, LoginForm, FamilyregisterForm
 
 # ホーム
 class IndexView(TemplateView):
@@ -25,18 +25,11 @@ class SignupView(CreateView):
         messages.success(self.request, '新規ユーザーを登録しました。')
         return response
 
-# # 家名登録用
-# class Family_registerView(CreateView):
-#     form_class = Family_registerForm   # 登録用フォームを設定
-#     template_name = "accounts/family_register.html"
-#     success_url = reverse_lazy("accounts:signup") # 家名登録後のリダイレクト先ページ
-
-    # def form_valid(self, form):
-    #     response = super().form_valid(form)
-    #     family_name = form.cleaned_data.get("family_name")
-    #     messages.success(self.request, '新規ユーザーを登録しました。')
-    #     return response
-
+# 家名登録用
+class FamilyregisterView(CreateView):
+    form_class = FamilyregisterForm   # 登録用フォームを設定
+    template_name = "accounts/familyregister.html"
+    success_url = reverse_lazy("accounts:signup") # 家名登録後のリダイレクト先ページ
 
 # ログイン
 class LoginView(BaseLoginView):

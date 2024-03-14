@@ -7,6 +7,7 @@
 {% block content %}
 <div>
     <br>
+    <p><a href="{% url 'accounts:familyregister' %}" >家名の登録ページへ</a></p>
     <form method="POST">
         {% csrf_token %}
         {{ form.non_field_errors }}

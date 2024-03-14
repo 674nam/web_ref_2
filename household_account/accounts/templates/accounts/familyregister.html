@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<div class="h1">Create Family name</div>
+<div class="h1">家名登録ページ</div>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
     <form method="POST">
         {% csrf_token %}
         {{ form }}
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Register</button>
         <a href="{% url 'accounts:signup' %}" class="btn btn-secondary">Back</a>
         </div>
     </form>
