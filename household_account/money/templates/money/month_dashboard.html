@@ -1,0 +1,57 @@
+{% extends 'kakeibo/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="month-pager">
+  <a href="{% url 'kakeibo:month_dashboard' prev_year prev_month %}">
+    前月
+  </a>
+  <span class="ml-4 mr-4">{{ year_month }}</span>
+  <a href="{% url 'kakeibo:month_dashboard' next_year next_month %}">
+    次月
+  </a>
+</div>
+
+{% comment %} グラフ {% endcomment %}
+{% autoescape off %}
+<div class="month-dash-page-top mt-4">
+{% comment %} 左上：カテゴリと金額のカードテーブル {% endcomment %}
+  <div class="left card">
+    <table class="table">
+      <tr>
+        <th>カテゴリ</th>
+        <th>金額</th>
+      </tr>
+      {% comment %} table_setディクショナリの値を取り出す {% endcomment %}
+      {% for key,value in table_set.items %}
+      <tr>
+        <td>{{ key }}</td>
+        <td>{{ value|intcomma }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td>Total</td>
+        <td>{{ total_payment|intcomma }}</td>
+      </tr>
+    </table>
+  </div>
+{% comment %} 右上：円グラフ {% endcomment %}
+    <div class="right ml-4 hidden_toolbar">
+      {{ plot_pie }}
+    </div>
+</div>
+
+{% comment %} 下部：棒グラフ {% endcomment %}
+<div class="month-dash-bottom">
+  <div class="hidden_toolbar">
+    {{ plot_bar }}
+  </div>
+</div>
+{% endautoescape %}
+
+{% endblock %}
+
+{% block extrajs %}
+{% comment %} plotly表示用のjsを読み込む {% endcomment %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock%}

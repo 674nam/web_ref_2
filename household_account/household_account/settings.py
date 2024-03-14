@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts' #
+    'accounts', # ユーザー登録アプリ
+    'money', # 家計簿アプリ
+    'import_export', # 家計簿のインポート、エクスポート用
 ]
 
 AUTH_USER_MODEL = "accounts.User" # カスタムユーザーを認証用ユーザーとして登録

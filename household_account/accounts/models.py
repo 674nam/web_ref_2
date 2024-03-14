@@ -45,7 +45,7 @@ class Family(models.Model):
             blank=False
         )
     def __str__(self):
-        return self.family_name
+        return f'{str(self.id)} , {self.family_name}'
 
 # カスタムユーザーモデル
 class User(AbstractBaseUser, PermissionsMixin):
@@ -99,4 +99,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email']  # スーパーユーザー作成時にemailも設定
 
     def __str__(self):
-        return self.account_id
+        return f'{str(self.id)} , {self.account_id}'
