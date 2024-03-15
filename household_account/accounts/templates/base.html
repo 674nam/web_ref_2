@@ -27,8 +27,8 @@
 <nav class="navbar fixed-top navbar-expand navbar-light bg-light">
 <ul style="width:100%" class="navbar-nav mr-auto">
     {% comment %} <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}">top</a> {% endcomment %}
-    </li>
+        <a class="nav-link" href="{% url 'index' %}">top</a>
+    </li> {% endcomment %}
     <li class="nav-item">
         <a class="nav-link" href="{% url 'accounts:login' %}">login</a>
     </li>
@@ -47,10 +47,8 @@
 </nav>
 
 <div class="container mx-auto text-center">
-    {% block title %}
-    {% endblock %}
-    {% block content %}
-    {% endblock %}
+    {% block title %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 </body>
 

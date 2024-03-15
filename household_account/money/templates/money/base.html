@@ -1,70 +1,50 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>家計簿アプリ</title>
-  <link rel="stylesheet" href="{% static 'kakeibo/css/reset.css' %}">
-  <link rel="stylesheet" href="{% static 'kakeibo/css/style.css' %}">
-  {% block extrajs %}{% endblock %}
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+  .navbar {
+  position: relative;
+  z-index: 1;
+  }
+  .container {
+  position: relative;
+  z-index: 2;
+  }
+  </style>
+  <title>Money</title>
 </head>
 
 <body>
   <header class="page-header">
     <h1>
-      <a href="{% url 'kakeibo:payment_list' %}" class="header-title">家計簿アプリ</a>
+      <a href="{% url 'money:payment_list' %}" class="header-title">家計簿アプリ</a>
     </h1>
-    <nav class="nav">
-      <ul class="main-nav ml-5">
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:payment_list'%}">支出一覧</a>
-        </li>
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:income_list'%}">収入一覧</a>
-        </li>
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:payment_create'%}">支出登録</a>
-        </li>
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:income_create'%}">収入登録</a>
-        </li>
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:month_dashboard' now_year now_month%}">月間支出</a>
-        </li>
-        <li class="ml-5">
-          <a href="{% url 'kakeibo:transition' %}">収支推移</a>
+    <nav class="navbar fixed-top navbar-expand navbar-light bg-light">
+      <ul style="width:100%" class="navbar-nav mr-auto">
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'money:payment_list' %}">支出一覧</a>
         </li>
     </nav>
   </header>
 
-  <div class="layout">
-    <div class="container">
+  <div class="layout mx-auto text-center">
+      {% block title %}{% endblock %}
+  </div>
+  <div class="container">
       <main>
-{% comment %} メッセージ表示 {% endcomment %}
-        {% if messages %}
-        <div class="alert alert-success js-alert" id="js-alert">
-          <button class="alert-btn-close js-alert-close" type="button">ｘ</button>
-{% comment %} メッセージ取り出し {% endcomment %}
-          {% for message in messages %}
-          <p> {{ message|linebreaks }}</p>
-          {% endfor %}
-        </div>
-        {% endif %}
         {% block content %}{% endblock %}
       </main>
-    </div>
   </div>
-</body>
 
-<script type="text/javascript">
-  // ×を押して閉じられるようにする
-  for (const element of document.querySelectorAll('.js-alert > .js-alert-close')) {
-    element.addEventListener('click', e => {
-      e.target.parentElement.classList.add('is-hidden');
-    });
-  }
-</script>
+</body>
 
 </html>

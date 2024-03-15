@@ -1,4 +1,4 @@
-{% extends 'kakeibo/base.html' %}
+{% extends 'money/base.html' %}
 {% load humanize %}
 {% block content %}
 
@@ -14,7 +14,7 @@
     <th>日付</th>
     <th>カテゴリ</th>
     <th>金額</th>
-    <th>摘要</th>
+    <th>備考</th>
     <th>編集</th>
   </tr>
   {% for income in income_list %}
@@ -32,10 +32,10 @@
     <td>
       <div class="manage-btn-area">
         <div class="update-btn-area">
-          <a class="btn btn-info" href="{% url 'kakeibo:income_update' income.pk %}">更新</a>
+          <a class="btn btn-info" href="{% url 'money:income_update' income.pk %}">更新</a>
         </div>
         <div class="delete-btn-area">
-          <a class="btn btn-danger" href="{% url 'kakeibo:income_delete' income.pk %}">削除</a>
+          <a class="btn btn-danger" href="{% url 'money:income_delete' income.pk %}">削除</a>
         </div>
       </div>
     </td>

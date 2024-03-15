@@ -1,40 +1,46 @@
-{% extends 'kakeibo/base.html' %}
+{% extends 'money/base.html' %}
 {% load humanize %}
-{% block content %}
 
-<form class="mt-2" id="search-form" action="" method="GET">
+{% block title %}
+<div class="h2">支出一覧</div>
+{% endblock %}
+
+{% block content %}
+<form class="mt-1" id="search-form" action="" method="GET">
+  {% csrf_token %}
   <div>
     <label class="label mr-4">年月</label>
     {{ search_form.year }}
     {{ search_form.month }}
   </div>
-  <div class="mt-4">
+  <div class="mt-2">
     <label class="label mr-4">金額</label>
     {{ search_form.greater_than }}
-    <span class="ml-4 mr-4">～</span>
+    <span class="ml-2 mr-4">～</span>
     {{ search_form.less_than }}
   </div>
-  <div class="mt-4">
-    {{ search_form.key_word }}
-    <button class="btn btn-info ml-4" type="submit">検索</button>
-  </div>
-  <div class="mt-2 inline">
+  <div class="mt-2">
+    <label class="label mr-4">カテゴリ</label>
     {{ search_form.category }}
+    <label class="label mr-4">ユーザー</label>
+    {{ search_form.account_id }}
+  </div>
+  <div>
+    {{ search_form.key_word }}
+    <button class="btn btn-primary" type="submit">検索</button>
   </div>
 </form>
-
-{% comment %} ↓表示件数 {% endcomment %}
-{% comment %} <p class="search-result mt-3"> {{ page_obj.paginator.count }}件の検索結果 </p> {% endcomment %}
 
 <table class="table mt-3">
   <tr>
     <th>日付</th>
     <th>カテゴリ</th>
     <th>金額</th>
-    <th>摘要</th>
-    <th>編集</th>
+    <th>備考</th>
+    <th>ユーザー</th>
   </tr>
   {% for payment in payment_list %}
+
   <tr>
     <td>{{ payment.date }}</td>
     <td>{{ payment.category }}</td>
@@ -44,25 +50,13 @@
       {{ payment.description }}
       {% endif %}
     </td>
-
-    <td>
-      <div class="manage-btn-area">
-        <div class="update-btn-area">
-          <a class="btn btn-info" href="{% url 'kakeibo:payment_update' payment.pk %}">更新</a>
-        </div>
-        <div class="delete-btn-area">
-          <a class="btn btn-danger" href="{% url 'kakeibo:payment_delete' payment.pk %}">削除</a>
-        </div>
-      </div>
-    </td>
-
+    <td>{{ payment.account_id }}</td>
   </tr>
   {% endfor %}
 </table>
 
-{% comment %} ↓ページネーション {% endcomment %}
 <div class="mt-5">
-  <h1>ページネーション予定位置</h1>
+  <p>ページネーション予定位置<p>
 </div>
 
 {% endblock %}
