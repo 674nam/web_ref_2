@@ -8,13 +8,16 @@ from .forms import SignUpForm, LoginForm, FamilyregisterForm
 
 # ホーム
 class IndexView(TemplateView):
-    template_name = "index.html"
+    # template_name = "accounts/index.html"
+    template_name = "accounts/login.html"
 
 # ユーザー登録
 class SignupView(CreateView):
     form_class = SignUpForm   # 登録用フォームを設定
     template_name = "accounts/signup.html"
-    success_url = reverse_lazy("accounts:index") # ユーザー作成後のリダイレクト先ページ
+    # success_url = reverse_lazy("accounts:index") # ユーザー作成後のリダイレクト先ページ
+    success_url = reverse_lazy("money:payment_list") # ユーザー作成後のリダイレクト先ページ
+
 
     def form_valid(self, form): # ユーザー作成後にそのままログイン状態にする
         response = super().form_valid(form)
@@ -35,6 +38,8 @@ class FamilyregisterView(CreateView):
 class LoginView(BaseLoginView):
     form_class = LoginForm      # ログイン用フォームを設定
     template_name = "accounts/login.html"
+
 # ログアウト
 class LogoutView(BaseLogoutView):
-    success_url = reverse_lazy("accounts:index")
+    # success_url = reverse_lazy("accounts:index")
+    success_url = reverse_lazy("accounts:login")

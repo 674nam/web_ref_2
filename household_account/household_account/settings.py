@@ -46,6 +46,10 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "accounts.User" # カスタムユーザーを認証用ユーザーとして登録
 NUMBER_GROUPING = 3 # 金額を3桁区切りにする
 
+# LOGIN_REDIRECT_URL = "accounts:index" # ログイン後リダイレクト先ページ指定
+LOGIN_REDIRECT_URL = "money:payment_list" # ログイン後リダイレクト先ページ指定
+
+LOGOUT_REDIRECT_URL = "accounts:login" # ログアウト後リダイレクト先ページ指定
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -129,6 +133,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGIN_REDIRECT_URL = "accounts:index" # ログイン後リダイレクト先ページ指定
-LOGOUT_REDIRECT_URL = "accounts:login" # ログアウト後リダイレクト先ページ指定

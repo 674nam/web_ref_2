@@ -2,7 +2,15 @@
 {% load humanize %}
 
 {% block title %}
-<div class="h2">支出一覧</div>
+  <div class="h2">支出一覧</div>
+  {% if messages %}
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -25,38 +33,48 @@
     <label class="label mr-4">ユーザー</label>
     {{ search_form.account_id }}
   </div>
-  <div>
+  <div class="mt-2">
     {{ search_form.key_word }}
     <button class="btn btn-primary" type="submit">検索</button>
   </div>
 </form>
 
-<table class="table mt-3">
-  <tr>
-    <th>日付</th>
-    <th>カテゴリ</th>
-    <th>金額</th>
-    <th>備考</th>
-    <th>ユーザー</th>
-  </tr>
-  {% for payment in payment_list %}
+  <table class="table mt-3">
+    <tr>
+      <th>日付</th>
+      <th>カテゴリ</th>
+      <th>金額</th>
+      <th>備考</th>
+      <th>ユーザー</th>
+    </tr>
 
-  <tr>
-    <td>{{ payment.date }}</td>
-    <td>{{ payment.category }}</td>
-    <td>{{ payment.price|intcomma}}</td>
-    <td>
-      {% if payment.description %}
-      {{ payment.description }}
-      {% endif %}
-    </td>
-    <td>{{ payment.account_id }}</td>
-  </tr>
-  {% endfor %}
-</table>
+    {% for payment in payment_list %}
+    <tr>
+      <td>{{ payment.date }}</td>
+      <td>{{ payment.category }}</td>
+      <td>{{ payment.price|intcomma}}</td>
+      <td>
+        {% if payment.description %}
+        {{ payment.description }}
+        {% endif %}
+      </td>
+      <td>{{ payment.account_id }}</td>
+    </tr>
+    {% endfor %}
+  </table>
 
-<div class="mt-5">
-  <p>ページネーション予定位置<p>
-</div>
+  <div class="mt-5">
+    <p>ページネーション予定位置<p>
+  </div>
+
+  <div class="my-3 text-center">
+      <span class="font-weight-bold">
+          <a href="/logout?next=">[ logout ]</a>
+      </span>
+      <span class="float-right">
+        <div>2024.3 pyweb class</div>
+        <div>Morita Nanase</div>
+      </span>
+  </div>
 
 {% endblock %}
