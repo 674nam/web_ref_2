@@ -1,0 +1,84 @@
+{% extends 'money/base.html' %}
+{% load humanize %}
+
+{% comment %} 不要 list.htmlに統一 {% endcomment %}
+
+{% block title %}
+  <div class="h2">収入一覧</div>
+  {% if messages %}
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <form class="mt-1" id="search-form" action="" method="GET">
+    {% csrf_token %}
+    <div>
+      <label class="label mr-4">年月</label>
+      {{ search_form.year }}
+      {{ search_form.month }}
+    </div>
+    <div class="mt-2">
+      <label class="label mr-4">金額</label>
+      {{ search_form.greater_than }}
+      <span class="ml-2 mr-4">～</span>
+      {{ search_form.less_than }}
+    </div>
+    <div class="mt-2">
+      <label class="label mr-4">カテゴリ</label>
+      {{ search_form.category }}
+      <label class="label mr-4">ユーザー</label>
+      {{ search_form.account_id }}
+    </div>
+    <div class="mt-2">
+      {{ search_form.key_word }}
+      <button class="btn btn-primary" type="submit">検索</button>
+    </div>
+  </form>
+
+  <table class="table mt-3">
+    <tr>
+      <th>日付</th>
+      <th>カテゴリ</th>
+      <th>金額</th>
+      <th>備考</th>
+      <th>ユーザー</th>
+    </tr>
+
+    {% for income in income_list %}
+    <tr>
+      <td>{{ income.date }}</td>
+      <td>{{ income.category }}</td>
+      <td>{{ income.price|intcomma}}</td>
+      <td>
+        {% if income.description %}
+        {{ income.description }}
+        {% endif %}
+        <td>{{ Income.account_id }}</td>
+      </td>
+
+      {% comment %} <td>
+        <div class="manage-btn-area">
+          <div class="update-btn-area">
+            <a class="btn btn-info" href="{% url 'money:income_update' income.pk %}">更新</a>
+          </div>
+          <div class="delete-btn-area">
+            <a class="btn btn-danger" href="{% url 'money:income_delete' income.pk %}">削除</a>
+          </div>
+        </div>
+      </td> {% endcomment %}
+
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div class="mt-5">
+    <p>ページネーション予定位置</p>
+  </div>
+
+{% endblock %}

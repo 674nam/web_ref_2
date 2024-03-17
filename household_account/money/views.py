@@ -136,7 +136,6 @@ class IncomeList(LoginRequiredMixin, generic.ListView):
         return context
 
 # 支出登録
-
 class PaymentCreate(LoginRequiredMixin, generic.CreateView):
     template_name = 'money/create.html'
     model = Payment
