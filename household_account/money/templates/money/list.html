@@ -1,6 +1,8 @@
 {% extends 'money/base.html' %}
 {% load humanize %}
 
+{% comment %} payment_list.htmlとincome_list.htmlを統一 {% endcomment %}
+
 {% block title %}
   <h2>{{ page_title }}</h2>
   {% if messages %}
@@ -60,17 +62,25 @@
         <td>{{ list.account_id }}</td>
       </td>
 
-      {% comment %} <td>
+      <td>
         <div class="manage-btn-area">
+        {% if '支出' in page_title %}
           <div class="update-btn-area">
-            <a class="btn btn-info" href="{% url 'money:income_update' income.pk %}">更新</a>
+            <a class="btn btn-primary" href="{% url 'money:payment_update' list.pk %}">更新</a>
           </div>
           <div class="delete-btn-area">
-            <a class="btn btn-danger" href="{% url 'money:income_delete' income.pk %}">削除</a>
+            <a class="btn btn-danger" href="{% url 'money:payment_delete' list.pk %}">削除</a>
           </div>
+        {% else %}
+          <div class="update-btn-area">
+            <a class="btn btn-primary" href="{% url 'money:income_update' list.pk %}">更新</a>
+          </div>
+          <div class="delete-btn-area">
+            <a class="btn btn-danger" href="{% url 'money:income_delete' list.pk %}">削除</a>
+          </div>
+        {% endif %}
         </div>
-      </td> {% endcomment %}
-
+      </td>
     </tr>
     {% endfor %}
   </table>

@@ -180,3 +180,98 @@ class IncomeCreate(LoginRequiredMixin, generic.CreateView):
                         f'カテゴリ:{income.category}\n'
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
+
+# 支出更新
+class PaymentUpdate(generic.UpdateView):
+    template_name = 'money/create.html'
+    model = Payment
+    form_class = PaymentCreateForm
+
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '支出更新' # contextに追加
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('money:payment_list')
+
+    def form_valid(self, form):
+        self.object = payment = form.save()
+        messages.info(self.request,
+                        f'支出を更新しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
+        return redirect(self.get_success_url())
+
+# 収入更新
+class IncomeUpdate(generic.UpdateView):
+    template_name = 'money/create.html'
+    model = Income
+    form_class = IncomeCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = '収入更新'
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('money:income_list')
+
+    def form_valid(self, form):
+        self.object = income = form.save()
+        messages.info(self.request,
+                        f'収入を更新しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
+        return redirect(self.get_success_url())
+
+# 支出削除
+class PaymentDelete(generic.DeleteView):
+    template_name = 'money/delete.html'
+    model = Payment
+
+    def get_success_url(self):
+        return reverse_lazy('money:payment_list')
+
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '支出削除確認' # contextに追加
+
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = payment = self.get_object()
+
+        payment.delete()
+        messages.info(self.request,
+                        f'支出を削除しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
+        return redirect(self.get_success_url())
+
+# 収入削除
+class IncomeDelete(generic.DeleteView):
+    template_name = 'money/delete.html'
+    model = Income
+
+    def get_success_url(self):
+        return reverse_lazy('money:income_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = '収入削除確認'
+
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = income = self.get_object()
+        income.delete()
+        messages.info(self.request,
+                        f'収入を削除しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
+        return redirect(self.get_success_url())
