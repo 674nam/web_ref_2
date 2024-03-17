@@ -1,18 +1,21 @@
 {% extends 'money/base.html' %}
 
+{% block title %}
+  <h2>{{ page_title }}</h2>
+{% endblock %}
+
 {% block content %}
-<h2>{{ page_title }}</h2>
-<form method="POST">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form %}
-  <div class="mt-4">
-    {{ field }}
-    {{ field.errors }}
-  </div>
-  {% endfor %}
-  <button class="btn btn-info ml-4" type="submit" name="button">送信</button>
-</form>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+    <div class="mt-2">
+      {{ field }}
+      {{ field.errors }}
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit" name="button">送信</button>
+  </form>
 
 {% comment %} date piker使用 {% endcomment %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>

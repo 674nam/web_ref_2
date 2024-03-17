@@ -2,7 +2,7 @@
 {% load humanize %}
 
 {% block title %}
-  <div class="h2">収入一覧</div>
+  <h2>{{ page_title }}</h2>
   {% if messages %}
   <div class="alert alert-primary alert-dismissible fade show" role="alert">
     {% for message in messages %}
@@ -48,16 +48,16 @@
       <th>ユーザー</th>
     </tr>
 
-    {% for income in income_list %}
+    {% for list in lists %}
     <tr>
-      <td>{{ income.date }}</td>
-      <td>{{ income.category }}</td>
-      <td>{{ income.price|intcomma}}</td>
+      <td>{{ list.date }}</td>
+      <td>{{ list.category }}</td>
+      <td>{{ list.price|intcomma}}</td>
       <td>
-        {% if income.description %}
-        {{ income.description }}
+        {% if list.description %}
+        {{ list.description }}
         {% endif %}
-        <td>{{ Income.account_id }}</td>
+        <td>{{ list.account_id }}</td>
       </td>
 
       {% comment %} <td>

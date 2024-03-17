@@ -1,8 +1,10 @@
 {% extends 'money/base.html' %}
 {% load humanize %}
 
+{% comment %} 不要 list.htmlに統一 {% endcomment %}
+
 {% block title %}
-  <div class="h2">支出一覧</div>
+  <div class="h2">収入一覧</div>
   {% if messages %}
   <div class="alert alert-primary alert-dismissible fade show" role="alert">
     {% for message in messages %}
@@ -48,36 +50,35 @@
       <th>ユーザー</th>
     </tr>
 
-    {% for payment in payment_list %}
+    {% for income in income_list %}
     <tr>
-      <td>{{ payment.date }}</td>
-      <td>{{ payment.category }}</td>
-      <td>{{ payment.price|intcomma}}</td>
+      <td>{{ income.date }}</td>
+      <td>{{ income.category }}</td>
+      <td>{{ income.price|intcomma}}</td>
       <td>
-        {% if payment.description %}
-        {{ payment.description }}
+        {% if income.description %}
+        {{ income.description }}
         {% endif %}
-        <td>{{ payment.account_id }}</td>
+        <td>{{ Income.account_id }}</td>
       </td>
 
       {% comment %} <td>
         <div class="manage-btn-area">
           <div class="update-btn-area">
-            <a class="btn btn-info" href="{% url 'money:payment_update' payment.pk %}">更新</a>
+            <a class="btn btn-info" href="{% url 'money:income_update' income.pk %}">更新</a>
           </div>
           <div class="delete-btn-area">
-            <a class="btn btn-danger" href="{% url 'money:payment_delete' payment.pk %}">削除</a>
+            <a class="btn btn-danger" href="{% url 'money:income_delete' income.pk %}">削除</a>
           </div>
         </div>
       </td> {% endcomment %}
-
 
     </tr>
     {% endfor %}
   </table>
 
   <div class="mt-5">
-    <p>ページネーション予定位置<p>
+    <p>ページネーション予定位置</p>
   </div>
 
 {% endblock %}

@@ -10,7 +10,8 @@ from .forms import PaymentSearchForm, IncomeSearchForm \
 
 
 class PaymentList(generic.ListView):
-    template_name = 'money/payment_list.html' # レンダリングするテンプレート
+    # template_name = 'money/payment_list.html'
+    template_name = 'money/list.html'
     model = Payment # Paymentモデルのレコードを渡す {{payment_list}}もしくは{{object_list}}
     ordering = '-date'
 
@@ -64,13 +65,18 @@ class PaymentList(generic.ListView):
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs)  # 親クラスの get_context_dataメソッドを実行
         context['search_form'] = self.form  # search_form変数をcontextに追加
+        context['page_title'] = '支出一覧' # list.html
+        context['lists'] = self.get_queryset() # list.html
+        # context['payment_list'] = self.get_queryset()  # payment_list.html
 
         return context # テンプレートをcontextに渡す{{ search_form }}で使用
 
 
 # 収入一覧
 class IncomeList(generic.ListView):
-    template_name = 'money/income_list.html'
+    # template_name = 'money/income_list.html'
+    template_name = 'money/list.html'
+
     model = Income
     ordering = '-date'
 
@@ -78,8 +84,7 @@ class IncomeList(generic.ListView):
         queryset = super().get_queryset()
         self.form = form = IncomeSearchForm(self.request.GET or None)
 
-        if form.is_valid(): # バリデーションチェック
-            # form.cleaned_data：バリデーションをクリアしたデータのみをディクショナリに格納
+        if form.is_valid():
             year = form.cleaned_data.get('year') # 'year'キーで値を取り出す
 
             # 選択なし：文字列'0'が入るため除外
@@ -124,7 +129,9 @@ class IncomeList(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search_form'] = self.form
-
+        context['page_title'] = '収入一覧'  # list.html
+        context['lists'] = self.get_queryset() # list.html
+        # context['income_list'] = self.get_queryset()  # imcome_list.html
         return context
 
 # 支出登録
