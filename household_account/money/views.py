@@ -2,14 +2,15 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages # システムメッセージ
+from django.contrib.auth.mixins import LoginRequiredMixin # ログインユーザーのみ閲覧可能
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory
 from .forms import PaymentSearchForm, IncomeSearchForm \
                     , PaymentCreateForm, IncomeCreateForm \
                     # , TransitionGraphSearchForm
 
-
-class PaymentList(generic.ListView):
+# 支出一覧
+class PaymentList(LoginRequiredMixin, generic.ListView):
     # template_name = 'money/payment_list.html'
     template_name = 'money/list.html'
     model = Payment # Paymentモデルのレコードを渡す {{payment_list}}もしくは{{object_list}}
@@ -73,7 +74,7 @@ class PaymentList(generic.ListView):
 
 
 # 収入一覧
-class IncomeList(generic.ListView):
+class IncomeList(LoginRequiredMixin, generic.ListView):
     # template_name = 'money/income_list.html'
     template_name = 'money/list.html'
 
@@ -135,8 +136,9 @@ class IncomeList(generic.ListView):
         return context
 
 # 支出登録
-class PaymentCreate(generic.CreateView):
-    template_name = 'money/register.html'
+
+class PaymentCreate(LoginRequiredMixin, generic.CreateView):
+    template_name = 'money/create.html'
     model = Payment
     form_class = PaymentCreateForm
 
@@ -148,18 +150,18 @@ class PaymentCreate(generic.CreateView):
     def get_success_url(self):
         return reverse_lazy('money:payment_list')
 
-    # def form_valid(self, form):
-    #     self.object = payment = form.save()
-    #     messages.info(self.request,
-    #                     f'支出を登録しました\n'
-    #                     f'日付:{payment.date}\n'
-    #                     f'カテゴリ:{payment.category}\n'
-    #                     f'金額:{payment.price}円')
-    #     return redirect(self.get_success_url())
+    def form_valid(self, form):
+        self.object = payment = form.save()
+        messages.info(self.request,
+                        f'支出を登録しました\n'
+                        f'日付:{payment.date}\n'
+                        f'カテゴリ:{payment.category}\n'
+                        f'金額:{payment.price}円')
+        return redirect(self.get_success_url())
 
 # 収入登録
-class IncomeCreate(generic.CreateView):
-    template_name = 'money/register.html'
+class IncomeCreate(LoginRequiredMixin, generic.CreateView):
+    template_name = 'money/create.html'
     model = Income
     form_class = IncomeCreateForm
 
@@ -171,11 +173,11 @@ class IncomeCreate(generic.CreateView):
     def get_success_url(self):
         return reverse_lazy('money:income_list')
 
-    # def form_valid(self, form):
-    #     self.object = income = form.save()
-    #     messages.info(self.request,
-    #                     f'収入を登録しました\n'
-    #                     f'日付:{income.date}\n'
-    #                     f'カテゴリ:{income.category}\n'
-    #                     f'金額:{income.price}円')
-    #     return redirect(self.get_success_url())
+    def form_valid(self, form):
+        self.object = income = form.save()
+        messages.info(self.request,
+                        f'収入を登録しました\n'
+                        f'日付:{income.date}\n'
+                        f'カテゴリ:{income.category}\n'
+                        f'金額:{income.price}円')
+        return redirect(self.get_success_url())

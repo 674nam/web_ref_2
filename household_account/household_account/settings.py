@@ -46,6 +46,8 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "accounts.User" # カスタムユーザーを認証用ユーザーとして登録
 NUMBER_GROUPING = 3 # 金額を3桁区切りにする
 
+LOGIN_URL = "accounts:login" # ログインユーザー以外がアクセスした際のリダイレクト先
+
 LOGIN_REDIRECT_URL = "money:payment_create" # ログイン後リダイレクト先
 # LOGIN_REDIRECT_URL = "money:payment_list" # ログイン後リダイレクト先
 # LOGIN_REDIRECT_URL = "accounts:index" # 不要
