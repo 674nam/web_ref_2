@@ -46,10 +46,11 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "accounts.User" # カスタムユーザーを認証用ユーザーとして登録
 NUMBER_GROUPING = 3 # 金額を3桁区切りにする
 
-# LOGIN_REDIRECT_URL = "accounts:index" # ログイン後リダイレクト先ページ指定
-LOGIN_REDIRECT_URL = "money:payment_list" # ログイン後リダイレクト先ページ指定
+LOGIN_REDIRECT_URL = "money:payment_create" # ログイン後リダイレクト先
+# LOGIN_REDIRECT_URL = "money:payment_list" # ログイン後リダイレクト先
+# LOGIN_REDIRECT_URL = "accounts:index" # 不要
 
-LOGOUT_REDIRECT_URL = "accounts:login" # ログアウト後リダイレクト先ページ指定
+LOGOUT_REDIRECT_URL = "accounts:login" # ログアウト後リダイレクト先
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

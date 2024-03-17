@@ -13,5 +13,5 @@ urlpatterns = [
     path('familyregister/', views.FamilyregisterView.as_view(), name="familyregister"),
     # 家計簿アプリへ
     path('money/payment_list/', PaymentList.as_view(), name='payment_list'),
-    # path('money/income_list/', IncomeList.as_view(), name='income_list'),
+    path('money/payment_create/', PaymentCreate.as_view(), name='payment_create'),
 ]
