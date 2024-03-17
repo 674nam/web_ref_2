@@ -64,10 +64,10 @@ class PaymentList(generic.ListView):
 
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs)  # 親クラスの get_context_dataメソッドを実行
-        context['search_form'] = self.form  # search_form変数をcontextに追加
         context['page_title'] = '支出一覧' # list.html
+        context['search_form'] = self.form  # search_form変数をcontextに追加
         context['lists'] = self.get_queryset() # list.html
-        # context['payment_list'] = self.get_queryset()  # payment_list.html
+        # context['payment_list'] = self.get_queryset()  # 不要payment_list.html
 
         return context # テンプレートをcontextに渡す{{ search_form }}で使用
 
@@ -128,10 +128,10 @@ class IncomeList(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['search_form'] = self.form
         context['page_title'] = '収入一覧'  # list.html
+        context['search_form'] = self.form
         context['lists'] = self.get_queryset() # list.html
-        # context['income_list'] = self.get_queryset()  # imcome_list.html
+        # context['income_list'] = self.get_queryset()  # 不要imcome_list.html
         return context
 
 # 支出登録

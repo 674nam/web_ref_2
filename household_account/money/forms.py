@@ -163,12 +163,15 @@ class PaymentCreateForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = '__all__'
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form'
-            field.widget.attrs['placeholder'] = field.label
+            # field.widget.attrs['placeholder'] = field.label フォーム内文字
             field.widget.attrs['autocomplete'] = 'off'
 
 # 収入登録フォーム
@@ -176,10 +179,12 @@ class IncomeCreateForm(forms.ModelForm):
     class Meta:
         model = Income
         fields = '__all__'
-
+        widgets = {
+        'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
+    }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form'
-            field.widget.attrs['placeholder'] = field.label
+            # field.widget.attrs['placeholder'] = field.label
             field.widget.attrs['autocomplete'] = 'off'

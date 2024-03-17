@@ -31,17 +31,18 @@
     <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
       <ul style="width:100%" class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'money:payment_list' %}">支出一覧</a>
-        </li>
-        <li class="ml-5">
-          <a class="nav-link" href="{% url 'money:income_list'%}">収入一覧</a>
-        </li>
-        <li class="ml-5">
           <a class="nav-link" href="{% url 'money:payment_create'%}">支出登録</a>
         </li>
-        <li class="ml-5">
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'money:income_create'%}">収入登録</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:payment_list' %}">支出一覧</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:income_list'%}">収入一覧</a>
+        </li>
+
         <li class="nav-item nav-link ms-auto fw-bold">
           {% if user.is_authenticated %}
             logined : "{{ user.account_id }}"

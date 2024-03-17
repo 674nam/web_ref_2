@@ -22,7 +22,7 @@ class PaymentItem(models.Model):
 # ユーザー設定支出項目
 class PaymentOrigItem(models.Model):
     account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    name = models.CharField('支出項目', max_length=32)
+    name = models.CharField('ユーザー設定支出項目', max_length=32)
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
@@ -33,7 +33,6 @@ class Payment(models.Model):
     account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     item = models.ForeignKey(PaymentItem, verbose_name='支出項目', on_delete=models.SET_NULL, null=True, blank=True)
     user_item = models.ForeignKey(PaymentOrigItem, verbose_name='ユーザー設定支出項目', on_delete=models.SET_NULL, null=True, blank=True)
-
     date = models.DateField('日付')
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     price = models.IntegerField('金額')
@@ -51,7 +50,7 @@ class IncomeCategory(models.Model):
 
 # 収入項目
 class IncomeItem(models.Model):
-    name = models.CharField('支出項目', max_length=32)
+    name = models.CharField('収入項目', max_length=32)
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
@@ -60,7 +59,7 @@ class IncomeItem(models.Model):
 # ユーザー設定収入項目
 class IncomeOrigItem(models.Model):
     account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    name = models.CharField('支出項目', max_length=32)
+    name = models.CharField('ユーザー設定収入項目', max_length=32)
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
@@ -69,9 +68,8 @@ class IncomeOrigItem(models.Model):
 # 収入
 class Income(models.Model):
     account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    item = models.ForeignKey(IncomeItem, verbose_name='支出項目', on_delete=models.SET_NULL, null=True, blank=True)
-    user_item = models.ForeignKey(IncomeOrigItem, verbose_name='支出項目', on_delete=models.SET_NULL, null=True, blank=True)
-
+    item = models.ForeignKey(IncomeItem, verbose_name='収入項目', on_delete=models.SET_NULL, null=True, blank=True)
+    user_item = models.ForeignKey(IncomeOrigItem, verbose_name='ユーザー設定収入項目', on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('日付')
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     price = models.IntegerField('金額')
