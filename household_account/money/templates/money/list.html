@@ -67,15 +67,11 @@
         {% if '支出' in page_title %}
           <div class="update-btn-area">
             <a class="btn btn-primary" href="{% url 'money:payment_update' list.pk %}">更新</a>
-          </div>
-          <div class="delete-btn-area">
             <a class="btn btn-danger" href="{% url 'money:payment_delete' list.pk %}">削除</a>
           </div>
         {% else %}
           <div class="update-btn-area">
             <a class="btn btn-primary" href="{% url 'money:income_update' list.pk %}">更新</a>
-          </div>
-          <div class="delete-btn-area">
             <a class="btn btn-danger" href="{% url 'money:income_delete' list.pk %}">削除</a>
           </div>
         {% endif %}

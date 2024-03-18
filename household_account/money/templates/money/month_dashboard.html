@@ -1,0 +1,14 @@
+{% extends 'money/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="month-pager mx-auto text-center">
+  <a href="{% url 'money:month_dashboard' prev_year prev_month %}">
+    前月
+  </a>
+  <span class="ml-4 mr-4">{{ year_month }}</span>
+  <a href="{% url 'money:month_dashboard' next_year next_month %}">
+    次月
+  </a>
+</div>
+{% endblock%}
