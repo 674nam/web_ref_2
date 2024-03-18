@@ -10,7 +10,6 @@
 <p class="mt-2">備考： {% if object.description %}{{ object.description }}{% endif %}</p>
 <p class="mt-2">ユーザー：{{ object.account_id }}</p>
 
-
 <form class="mt-4" method="post">
   {% csrf_token %}
   {% comment %} ページタイトル：支出⇒支出一覧、収入⇒収入一覧へ戻る {% endcomment %}

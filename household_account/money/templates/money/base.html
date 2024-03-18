@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -21,6 +22,7 @@
   }
   </style>
   <title>Money</title>
+  {% block extrajs %}{% endblock %}
 </head>
 
 <body>
@@ -43,7 +45,7 @@
           <a class="nav-link" href="{% url 'money:income_list'%}">収入一覧</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'money:month_dashboard' now_year now_month%}">月間支出</a>
+          <a class="nav-link" href="{% url 'money:month_dashboard' now_year now_month%}">月間</a>
         </li>
 
         <li class="nav-item nav-link ms-auto fw-bold">
