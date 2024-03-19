@@ -162,8 +162,8 @@ class PaymentCreate(LoginRequiredMixin, generic.CreateView):
         return reverse_lazy('money:payment_list')
 
     def form_valid(self, form):
-        login_user = self.request.user  # ログイン中のユーザーを取得
         # self.object = payment = form.save()
+        login_user = self.request.user  # ログイン中のユーザーを取得
         self.object = payment = form.save(commit=False)
         payment.account_id = login_user
         payment.save()
@@ -202,7 +202,7 @@ class IncomeCreate(LoginRequiredMixin, generic.CreateView):
         return redirect(self.get_success_url())
 
 # 支出更新
-class PaymentUpdate(generic.UpdateView):
+class PaymentUpdate(LoginRequiredMixin, generic.UpdateView):
     template_name = 'money/create.html'
     model = Payment
     form_class = PaymentCreateForm
@@ -225,7 +225,7 @@ class PaymentUpdate(generic.UpdateView):
         return redirect(self.get_success_url())
 
 # 収入更新
-class IncomeUpdate(generic.UpdateView):
+class IncomeUpdate(LoginRequiredMixin, generic.UpdateView):
     template_name = 'money/create.html'
     model = Income
     form_class = IncomeCreateForm
@@ -248,7 +248,7 @@ class IncomeUpdate(generic.UpdateView):
         return redirect(self.get_success_url())
 
 # 支出削除
-class PaymentDelete(generic.DeleteView):
+class PaymentDelete(LoginRequiredMixin, generic.DeleteView):
     template_name = 'money/delete.html'
     model = Payment
 
@@ -281,7 +281,7 @@ class PaymentDelete(generic.DeleteView):
 
 
 # 収入削除
-class IncomeDelete(generic.DeleteView):
+class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
     template_name = 'money/delete.html'
     model = Income
 
@@ -305,7 +305,7 @@ class IncomeDelete(generic.DeleteView):
 
 
 # # 月間支出ダッシュボード
-# class MonthDashboard(generic.TemplateView):
+# class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
 #     template_name = 'money/month_dashboard.html'
 
 #     def get_context_data(self, **kwargs): # オーバーライド
@@ -370,8 +370,99 @@ class IncomeDelete(generic.DeleteView):
 #         context['payment_bar'] = plot_bar
 #         return context
 
+# # 月間支出・収入ダッシュボード
+# class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
+#     template_name = 'money/month_dashboard.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+
+#         year = int(self.kwargs.get('year'))
+#         month = int(self.kwargs.get('month'))
+#         context['year_month'] = f'{year}年{month}月'
+
+#         if month == 1:
+#             prev_year = year - 1
+#             prev_month = 12
+#         else:
+#             prev_year = year
+#             prev_month = month - 1
+
+#         if month == 12:
+#             next_year = year + 1
+#             next_month = 1
+#         else:
+#             next_year = year
+#             next_month = month + 1
+#         context['prev_year'] = prev_year
+#         context['prev_month'] = prev_month
+#         context['next_year'] = next_year
+#         context['next_month'] = next_month
+
+#         # PaymentモデルのQuerySetを取り出す
+#         payment_queryset = Payment.objects.filter(date__year=year)
+#         payment_queryset = payment_queryset.filter(date__month=month)
+#         # 後の工程のエラー対策
+#         if not payment_queryset:
+#             return context
+#         # 取り出したQuerySetをpandasデータフレーム(df)化
+#         payment_df = read_frame(payment_queryset, fieldnames=['date', 'price', 'category'])
+
+#         # IncomeモデルのQuerySetを取り出す
+#         income_queryset = Income.objects.filter(date__year=year)
+#         income_queryset = income_queryset.filter(date__month=month)
+#         if not income_queryset:
+#             return context
+#         income_df = read_frame(income_queryset, fieldnames=['date', 'price', 'category'])
+
+#         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
+#         gen = GraphGenerator()
+
+#         # Paymentデータに基づくグラフ
+#         payment_pie_labels, payment_pie_values = self.prepare_data(payment_df)
+#         payment_pie = gen.month_pie(labels=payment_pie_labels, values=payment_pie_values)
+#         context['payment_pie'] = payment_pie
+#         # カテゴリー毎に金額をpivot集計
+#         payment_table_set = pd.pivot_table(payment_df, index='category', values='price', aggfunc=np.sum)
+#         # テーブルでのカテゴリと集計金額の表示
+#         # ディクショナリ{カテゴリ:集計金額, カテゴリ:集計金額…}をcontextに追加
+#         context['payment_table_set'] = payment_table_set.to_dict()['price']
+#         # totalの数字を計算してcontextに追加
+#         context['total_payment'] = payment_df['price'].sum()
+#         # 日別棒グラフ
+#         payment_bar_dates, payment_bar_heights = self.prepare_data(payment_df, by='date')
+#         payment_bar = gen.month_daily_bar(x_list=payment_bar_dates, y_list=payment_bar_heights)
+#         context['payment_bar'] = payment_bar
+
+#         # Incomeデータに基づくグラフ
+#         income_pie_labels, income_pie_values = self.prepare_data(income_df)
+#         income_pie = gen.month_pie(labels=income_pie_labels, values=income_pie_values)
+#         context['income_pie'] = income_pie
+
+#         income_table_set = pd.pivot_table(income_df, index='category', values='price', aggfunc=np.sum)
+#         context['income_table_set'] = income_table_set.to_dict()['price']
+#         context['total_income'] = income_df['price'].sum()
+
+#         income_bar_dates, income_bar_heights = self.prepare_data(income_df, by='date')
+#         income_bar = gen.month_daily_bar_income(x_list=income_bar_dates, y_list=income_bar_heights)
+#         context['income_bar'] = income_bar
+
+#         return context
+
+#     def prepare_data(self, df, by='category'):
+#         if by == 'category':
+#             pivot_df = pd.pivot_table(df, index=by, values='price', aggfunc=np.sum)
+#             labels = list(pivot_df.index.values)
+#             values = [val[0] for val in pivot_df.values]
+#             return labels, values
+#         elif by == 'date':
+#             pivot_df = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum)
+#             dates = list(pivot_df.index.values)
+#             heights = [val[0] for val in pivot_df.values]
+#             return dates, heights
+
 # 月間支出・収入ダッシュボード
-class MonthDashboard(generic.TemplateView):
+class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
     template_name = 'money/month_dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -399,9 +490,12 @@ class MonthDashboard(generic.TemplateView):
         context['next_year'] = next_year
         context['next_month'] = next_month
 
+        login_user = self.request.user  # ログイン中のユーザーを取得
         # PaymentモデルのQuerySetを取り出す
         payment_queryset = Payment.objects.filter(date__year=year)
         payment_queryset = payment_queryset.filter(date__month=month)
+        payment_queryset = payment_queryset.filter(date__month=month)
+
         # 後の工程のエラー対策
         if not payment_queryset:
             return context
