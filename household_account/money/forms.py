@@ -162,7 +162,8 @@ class IncomeSearchForm(forms.Form):
 class PaymentCreateForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = '__all__'
+        # fields = '__all__' # 表示するフォームの種類
+        fields = ['date','category','item', 'user_item', 'price', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
         }
@@ -178,7 +179,8 @@ class PaymentCreateForm(forms.ModelForm):
 class IncomeCreateForm(forms.ModelForm):
     class Meta:
         model = Income
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['date','category','item', 'user_item', 'price', 'description']
         widgets = {
         'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
     }
