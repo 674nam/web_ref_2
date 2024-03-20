@@ -168,9 +168,9 @@ class PaymentCreate(LoginRequiredMixin, generic.CreateView):
         payment.account_id = login_user
         payment.save()
         messages.info(self.request,
-                        f'支出を登録しました\n'
-                        f'日付:{payment.date}\n'
-                        f'カテゴリ:{payment.category}\n'
+                        f'支出を登録しました'
+                        f'日付:{payment.date}'
+                        f'カテゴリ:{payment.category}'
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
@@ -195,9 +195,9 @@ class IncomeCreate(LoginRequiredMixin, generic.CreateView):
         income.account_id = login_user
         income.save()
         messages.info(self.request,
-                        f'収入を登録しました\n'
-                        f'日付:{income.date}\n'
-                        f'カテゴリ:{income.category}\n'
+                        f'収入を登録しました'
+                        f'日付:{income.date}'
+                        f'カテゴリ:{income.category}'
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
@@ -218,9 +218,9 @@ class PaymentUpdate(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         self.object = payment = form.save()
         messages.info(self.request,
-                        f'支出を更新しました\n'
-                        f'日付:{payment.date}\n'
-                        f'カテゴリ:{payment.category}\n'
+                        f'支出を更新しました'
+                        f'日付:{payment.date}'
+                        f'カテゴリ:{payment.category}'
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
@@ -241,9 +241,9 @@ class IncomeUpdate(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         self.object = income = form.save()
         messages.info(self.request,
-                        f'収入を更新しました\n'
-                        f'日付:{income.date}\n'
-                        f'カテゴリ:{income.category}\n'
+                        f'収入を更新しました'
+                        f'日付:{income.date}'
+                        f'カテゴリ:{income.category}'
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
@@ -264,18 +264,18 @@ class PaymentDelete(LoginRequiredMixin, generic.DeleteView):
         self.object = payment = self.get_object()
         payment.delete()
         messages.info(self.request,
-                        f'支出を削除しました\n'
-                        f'日付:{payment.date}\n'
-                        f'カテゴリ:{payment.category}\n'
+                        f'支出を削除しました'
+                        f'日付:{payment.date}'
+                        f'カテゴリ:{payment.category}'
                         f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
     # def form_valid(self, form):
     #     self.object = payment = form.save()
     #     messages.info(self.request,
-    #                     f'支出を削除しました\n'
-    #                     f'日付:{payment.date}\n'
-    #                     f'カテゴリ:{payment.category}\n'
+    #                     f'支出を削除しました'
+    #                     f'日付:{payment.date}'
+    #                     f'カテゴリ:{payment.category}'
     #                     f'金額:{payment.price}円')
     #     return redirect(self.get_success_url())
 
@@ -297,16 +297,16 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
         self.object = income = self.get_object()
         income.delete()
         messages.info(self.request,
-                        f'収入を削除しました\n'
-                        f'日付:{income.date}\n'
-                        f'カテゴリ:{income.category}\n'
+                        f'収入を削除しました'
+                        f'日付:{income.date}'
+                        f'カテゴリ:{income.category}'
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
 
 # # 月間支出ダッシュボード
-# class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
-#     template_name = 'money/month_dashboard.html'
+# class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+#     template_name = 'money/month_graph.html'
 
 #     def get_context_data(self, **kwargs): # オーバーライド
 #         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
@@ -370,9 +370,9 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
 #         context['payment_bar'] = plot_bar
 #         return context
 
-# # 月間支出・収入ダッシュボード
-# class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
-#     template_name = 'money/month_dashboard.html'
+# # 月間支出・収入
+# class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+#     template_name = 'money/month_graph.html'
 
 #     def get_context_data(self, **kwargs):
 #         context = super().get_context_data(**kwargs)
@@ -461,9 +461,9 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
 #             heights = [val[0] for val in pivot_df.values]
 #             return dates, heights
 
-# 月間支出・収入ダッシュボード
-class MonthDashboard(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'money/month_dashboard.html'
+# 月間支出・収入グラフ
+class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'money/month_graph.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,4 +1,4 @@
-# 月間ダッシュボード用
+# 月間グラフ用
 # 現在年と現在月の共通contextの設定
 # settings.pyのTEMPLATESに追記あり
 # 月間支出ページのurlにも表示⇒urls.py記載
