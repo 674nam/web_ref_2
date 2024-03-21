@@ -27,7 +27,7 @@ class PaymentItem(models.Model):
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
-        return self.name
+        return f'{self.category} ; {self.name}'
 
     class Meta:
         ordering = ('id',)
@@ -38,7 +38,7 @@ class IncomeItem(models.Model):
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
-        return self.name
+        return f'{self.category} ; {self.name}'
 
     class Meta:
         ordering = ('id',)
@@ -50,8 +50,7 @@ class PaymentOrigItem(models.Model):
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
-        return self.name
-
+        return f'{self.category} ; {self.name}'
     class Meta:
         ordering = ('id',)
 
@@ -62,7 +61,7 @@ class IncomeOrigItem(models.Model):
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
     def __str__(self):
-        return self.name
+        return f'{self.category} ; {self.name}'
 
     class Meta:
         ordering = ('id',)
