@@ -1,5 +1,5 @@
-from django.views import generic
-from django.urls import reverse_lazy
+from django.views.generic import *
+from django.urls import reverse_lazy # クラスベースビューにおけるrender
 from django.shortcuts import redirect
 from django.contrib import messages # システムメッセージ
 from django.contrib.auth.mixins import LoginRequiredMixin # ログインユーザーのみ閲覧可能
@@ -15,7 +15,7 @@ from .forms import PaymentSearchForm, IncomeSearchForm \
 from .plugin_plotly import GraphGenerator # グラフ
 
 # 支出一覧
-class PaymentList(LoginRequiredMixin, generic.ListView):
+class PaymentList(LoginRequiredMixin, ListView):
     template_name = 'money/payment_list.html'
     # template_name = 'money/list.html'
     model = Payment
@@ -85,7 +85,7 @@ class PaymentList(LoginRequiredMixin, generic.ListView):
 
 
 # 収入一覧
-class IncomeList(LoginRequiredMixin, generic.ListView):
+class IncomeList(LoginRequiredMixin, ListView):
     template_name = 'money/income_list.html'
     # template_name = 'money/list.html'
     model = Income
@@ -148,7 +148,7 @@ class IncomeList(LoginRequiredMixin, generic.ListView):
         return context
 
 # 支出登録
-class PaymentCreate(LoginRequiredMixin, generic.CreateView):
+class PaymentCreate(LoginRequiredMixin, CreateView):
     template_name = 'money/create.html'
     model = Payment
     form_class = PaymentCreateForm
@@ -159,7 +159,7 @@ class PaymentCreate(LoginRequiredMixin, generic.CreateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('money:payment_list')
+        return reverse_lazy('money:payment_list') # クラスベースビューにおけるrender
 
     def form_valid(self, form):
         # self.object = payment = form.save()
@@ -175,7 +175,7 @@ class PaymentCreate(LoginRequiredMixin, generic.CreateView):
         return redirect(self.get_success_url())
 
 # 収入登録
-class IncomeCreate(LoginRequiredMixin, generic.CreateView):
+class IncomeCreate(LoginRequiredMixin, CreateView):
     template_name = 'money/create.html'
     model = Income
     form_class = IncomeCreateForm
@@ -202,7 +202,7 @@ class IncomeCreate(LoginRequiredMixin, generic.CreateView):
         return redirect(self.get_success_url())
 
 # 支出更新
-class PaymentUpdate(LoginRequiredMixin, generic.UpdateView):
+class PaymentUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'money/create.html'
     model = Payment
     form_class = PaymentCreateForm
@@ -225,7 +225,7 @@ class PaymentUpdate(LoginRequiredMixin, generic.UpdateView):
         return redirect(self.get_success_url())
 
 # 収入更新
-class IncomeUpdate(LoginRequiredMixin, generic.UpdateView):
+class IncomeUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'money/create.html'
     model = Income
     form_class = IncomeCreateForm
@@ -248,7 +248,7 @@ class IncomeUpdate(LoginRequiredMixin, generic.UpdateView):
         return redirect(self.get_success_url())
 
 # 支出削除
-class PaymentDelete(LoginRequiredMixin, generic.DeleteView):
+class PaymentDelete(LoginRequiredMixin, DeleteView):
     template_name = 'money/delete.html'
     model = Payment
 
@@ -281,7 +281,7 @@ class PaymentDelete(LoginRequiredMixin, generic.DeleteView):
 
 
 # 収入削除
-class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
+class IncomeDelete(LoginRequiredMixin, DeleteView):
     template_name = 'money/delete.html'
     model = Income
 
@@ -305,7 +305,7 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
 
 
 # # 月間支出ダッシュボード
-# class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+# class MonthGraph(LoginRequiredMixin, TemplateView):
 #     template_name = 'money/month_graph.html'
 
 #     def get_context_data(self, **kwargs): # オーバーライド
@@ -371,7 +371,7 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
 #         return context
 
 # # 月間支出・収入
-# class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+# class MonthGraph(LoginRequiredMixin, TemplateView):
 #     template_name = 'money/month_graph.html'
 
 #     def get_context_data(self, **kwargs):
@@ -462,7 +462,7 @@ class IncomeDelete(LoginRequiredMixin, generic.DeleteView):
 #             return dates, heights
 
 # 月間支出・収入グラフ
-class MonthGraph(LoginRequiredMixin, generic.TemplateView):
+class MonthGraph(LoginRequiredMixin, TemplateView):
     template_name = 'money/month_graph.html'
 
     def get_context_data(self, **kwargs):
