@@ -1,5 +1,5 @@
 from django.views.generic import *
-from django.urls import reverse_lazy # クラスベースビューにおけるrender
+from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages # システムメッセージ
 from django.contrib.auth.mixins import LoginRequiredMixin # ログインユーザーのみ閲覧可能
@@ -159,7 +159,7 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('money:payment_list') # クラスベースビューにおけるrender
+        return reverse_lazy('money:payment_list')
 
     def form_valid(self, form):
         # self.object = payment = form.save()
