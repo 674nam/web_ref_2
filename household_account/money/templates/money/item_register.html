@@ -1,0 +1,35 @@
+{% extends 'money/base.html' %}
+
+{% block title %}
+  <div class="h2">{{ page_title }}</div>
+{% endblock %}
+
+{% block content %}
+  <br>
+  <form method="POST">
+    {% csrf_token %}
+      {{ form }}
+        <button type="submit" class="btn btn-primary">登録</button>
+  <br>
+  {% if '支出' in page_title %}
+    <a href="{% url 'money:payment_create' %}" class="btn btn-secondary">戻る</a>
+  {% else %}
+    <a href="{% url 'money:income_create' %}" class="btn btn-secondary">戻る</a>
+  {% endif %}
+</form>
+
+<table class="table mt-3">
+  <tr>
+    <th>ユーザー設定項目</th>
+    <th>カテゴリ</th>
+    <th>ユーザー</th>
+  </tr>
+{% for list in lists %}
+  <tr>
+    <td>{{ list.category }}</td>
+    <td>{{ list.name }}</td>
+    <td>{{ list.account_id }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

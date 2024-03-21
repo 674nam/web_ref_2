@@ -8,9 +8,11 @@ import pandas as pd # グラフ
 from django_pandas.io import read_frame # グラフ
 from django.contrib.auth import get_user_model # 設定されたユーザーモデルのインポート
 
-from .models import Payment, PaymentCategory, Income, IncomeCategory
+from .models import Payment, PaymentCategory, Income, IncomeCategory \
+                    , PaymentOrigItem, IncomeOrigItem
 from .forms import PaymentSearchForm, IncomeSearchForm \
                     , PaymentCreateForm, IncomeCreateForm \
+                    , PaymentOrigItemForm, IncomeOrigItemForm \
                     # , TransitionGraphSearchForm
 from .plugin_plotly import GraphGenerator # グラフ
 
@@ -201,6 +203,51 @@ class IncomeCreate(LoginRequiredMixin, CreateView):
                         f'金額:{income.price}円')
         return redirect(self.get_success_url())
 
+# ユーザー設定支出項目登録
+class PaymentOrigItemRegister(LoginRequiredMixin, CreateView):
+    template_name = "money/item_register.html"
+    model = PaymentOrigItem
+    form_class = PaymentOrigItemForm   # 登録用フォームを設定
+
+    def get_context_data(self, **kwargs): #オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = 'ユーザー設定支出項目登録'
+        context['lists'] = PaymentOrigItem.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('money:payment_create')
+
+    def form_valid(self, form):
+        login_user = self.request.user  # ログイン中のユーザーを取得
+        self.object = payment = form.save(commit=False)
+        payment.account_id = login_user
+        payment.save()
+        return redirect(self.get_success_url())
+
+# ユーザー設定収入項目登録
+class IncomeOrigItemRegister(LoginRequiredMixin, CreateView):
+    template_name = "money/item_register.html"
+    model = IncomeOrigItem
+    form_class = IncomeOrigItemForm   # 登録用フォームを設定
+
+    def get_context_data(self, **kwargs): #オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = 'ユーザー設定収入項目登録'
+        context['lists'] = IncomeOrigItem.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('money:income_create')
+
+    def form_valid(self, form):
+        login_user = self.request.user  # ログイン中のユーザーを取得
+        self.object = income = form.save(commit=False)
+        income.account_id = login_user
+        income.save()
+        return redirect(self.get_success_url())
+
+
 # 支出更新
 class PaymentUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'money/create.html'
@@ -374,7 +421,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
         gen_income = GraphGenerator()
 
-        # 月間支出円グラフ カテゴリー毎に金額をpivot集計
+        # 月間収入円グラフ カテゴリー毎に金額をpivot集計
         df_income_pie = pd.pivot_table(df_income, index='category', values='price', aggfunc=np.sum)
         # カテゴリー情報をdf_income_pie.index.valuesで取り出してリスト化
         pie_income_labels = list(df_income_pie.index.values)
@@ -391,7 +438,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         # totalの数字を計算してcontextに追加
         context['total_income'] = df_income['price'].sum()
 
-        # 日別支出棒グラフの素材
+        # 日別収入棒グラフの素材
         df_income_bar = pd.pivot_table(df_income, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
         dates_income = list(df_income_bar.index.values) # 日付情報をリスト化
         heights_income = [val[0] for val in df_income_bar.values] # 金額情報をディクショナリ化

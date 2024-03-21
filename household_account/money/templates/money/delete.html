@@ -1,25 +1,25 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-<h2>{{ page_title }}</h2>
+  <div class="h2">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
-<p class="mt-5"> 削除しますか？</p>
+  <p class="mt-5"> 削除しますか？</p>
 
-<p class="mt-2">日付：{{ object.date }}</p>
-<p class="mt-2">カテゴリ：{{ object.category }}</p>
-<p class="mt-2">項目：{{ object.item }}</p>
-<p class="mt-2">金額：{{ object.price }}</p>
-<p class="mt-2">備考： {% if object.description %}{{ object.description }}{% endif %}</p>
-<p class="mt-2">ユーザー：{{ object.account_id }}</p>
+  <p class="mt-2">日付：{{ object.date }}</p>
+  <p class="mt-2">カテゴリ：{{ object.category }}</p>
+  <p class="mt-2">項目：{{ object.item }}</p>
+  <p class="mt-2">金額：{{ object.price }}</p>
+  <p class="mt-2">備考： {% if object.description %}{{ object.description }}{% endif %}</p>
+  <p class="mt-2">ユーザー：{{ object.account_id }}</p>
 
 <form method="post">
   {% csrf_token %}
   {% if '支出' in page_title %}
-    <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+    <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>&emsp;
   {% else %}
-    <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+    <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>&emsp;
   {% endif %}
     <button type='submit' class="btn btn-danger" name="button">削除</button>
 </form>

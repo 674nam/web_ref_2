@@ -1,10 +1,17 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-  <h2>{{ page_title }}</h2>
+  <div class="h2">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
+<br>
+  {% if '支出' in page_title %}
+  <p><a href="{% url 'money:payment_item_register' %}" >ユーザー設定支出項目登録ページへ</a></p>
+  {% else %}
+  <p><a href="{% url 'money:income_item_register' %}" >ユーザー設定収入項目登録ページへ</a></p>
+  {% endif %}
+
   <form method="POST">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -15,12 +22,13 @@
       {{ field }}
     </div>
     {% endfor %}
-    <button class="btn btn-primary" type="submit" name="button">送信</button>
+
     {% if '支出' in page_title %}
-      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>&emsp;
     {% else %}
-      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>&emsp;
     {% endif %}
+    <button class="btn btn-primary" type="submit" name="button">更新</button>
   </form>
 
 {% comment %} date piker使用 土日カラー付き{% endcomment %}

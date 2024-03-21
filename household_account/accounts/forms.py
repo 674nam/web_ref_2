@@ -1,10 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-# from django import forms
 from django.forms import ModelForm
 
-
 from .models import User, Family
-
 
 # ユーザー登録フォーム
 class SignUpForm(UserCreationForm):
@@ -16,7 +13,6 @@ class SignUpForm(UserCreationForm):
             "email",
             "first_name",
         )
-
 
 # 家名登録フォーム
 class FamilyregisterForm(ModelForm):

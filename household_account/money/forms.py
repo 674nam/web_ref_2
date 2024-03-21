@@ -1,8 +1,10 @@
 from django import forms
 from django.utils import timezone
+from django.forms import ModelForm
 
 from accounts.models import User
-from .models import PaymentCategory, IncomeCategory, Payment, Income
+from .models import Payment, PaymentCategory, Income, IncomeCategory, \
+                    PaymentOrigItem, IncomeOrigItem
 
 # 支出検索フォーム
 class PaymentSearchForm(forms.Form):
@@ -190,3 +192,16 @@ class IncomeCreateForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form'
             # field.widget.attrs['placeholder'] = field.label
             field.widget.attrs['autocomplete'] = 'off'
+
+
+# ユーザー設定支出項目登録フォーム
+class PaymentOrigItemForm(ModelForm):
+    class Meta:
+        model = PaymentOrigItem
+        fields = ['category', 'name']
+
+# ユーザー設定収入項目登録フォーム
+class IncomeOrigItemForm(ModelForm):
+    class Meta:
+        model = IncomeOrigItem
+        fields = ['category', 'name']

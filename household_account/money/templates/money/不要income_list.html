@@ -1,18 +1,9 @@
 {% extends 'money/base.html' %}
 {% load humanize %}
-
 {% comment %} list.htmlに統一 {% endcomment %}
 
 {% block title %}
   <div class="h2">収入一覧</div>
-  {% if messages %}
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
-    {% for message in messages %}
-      <p>{{ message }}</p>
-    {% endfor %}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-  {% endif %}
 {% endblock %}
 
 {% block content %}

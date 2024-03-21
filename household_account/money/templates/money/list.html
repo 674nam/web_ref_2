@@ -3,15 +3,7 @@
 {% comment %} payment_list.htmlとincome_list.htmlを統一 {% endcomment %}
 
 {% block title %}
-  <h2>{{ page_title }}</h2>
-  {% if messages %}
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
-    {% for message in messages %}
-      <p>{{ message }}</p>
-    {% endfor %}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-  {% endif %}
+  <div class="h2">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
@@ -62,8 +54,8 @@
         {% if list.description %}
         {{ list.description }}
         {% endif %}
-        <td>{{ list.account_id }}</td>
       </td>
+      <td>{{ list.account_id }}</td>
       <td>
         {% if '支出' in page_title %}
             <a class="btn btn-primary" href="{% url 'money:payment_update' list.pk %}">更新</a>
