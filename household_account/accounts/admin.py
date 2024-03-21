@@ -10,9 +10,9 @@ class UserResource(resources.ModelResource):
         model = User
 
 class UserAdmin(ImportExportModelAdmin):
-    list_display = ("account_id", "email", "is_superuser")
+    list_display = ("id", "account_id", "email", "is_superuser")
     readonly_fields = ('created_at', 'updated_at')
-    ordering = ("-updated_at",)
+    ordering = ("id",)
     exclude = ("username", )
 
     fieldsets = (

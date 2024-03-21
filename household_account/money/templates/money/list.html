@@ -71,6 +71,7 @@
         {% else %}
             <a class="btn btn-primary" href="{% url 'money:income_update' list.pk %}">更新</a>
             <a class="btn btn-danger" href="{% url 'money:income_delete' list.pk %}">削除</a>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

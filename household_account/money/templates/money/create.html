@@ -16,25 +16,12 @@
     </div>
     {% endfor %}
     <button class="btn btn-primary" type="submit" name="button">送信</button>
+    {% if '支出' in page_title %}
+      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+    {% else %}
+      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+    {% endif %}
   </form>
-
-
-{% comment %} date piker使用 {% endcomment %}
-{% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript">
-  $(function() {
-    $('#id_date').datepicker({
-      dateFormat: 'yy-mm-dd',
-      firstDay: 0, // 日曜始まりのカレンダー
-      dayNamesMin: ["日", "月", "火", "水", "木", "金", "土"],
-      monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-    });
-  })
-</script>
-{% endblock %} {% endcomment %}
-
 
 {% comment %} date piker使用 土日カラー付き{% endcomment %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>

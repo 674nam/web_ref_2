@@ -47,6 +47,9 @@ class Family(models.Model):
     def __str__(self):
         return f'{str(self.id)} , {self.family_name}'
 
+    class Meta:
+        ordering = ('id',)
+
 # カスタムユーザーモデル
 class User(AbstractBaseUser, PermissionsMixin):
     account_id = models.CharField(

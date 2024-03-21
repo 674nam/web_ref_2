@@ -8,6 +8,9 @@ class PaymentCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('id',)
+
 # 支出項目
 class PaymentItem(models.Model):
     name = models.CharField('支出項目', max_length=32)
@@ -15,6 +18,9 @@ class PaymentItem(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('id',)
 
 # ユーザー設定支出項目
 class PaymentOrigItem(models.Model):
@@ -24,6 +30,9 @@ class PaymentOrigItem(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('id',)
 
 # 支出
 class Payment(models.Model):
@@ -38,12 +47,18 @@ class Payment(models.Model):
     def __str__(self):
         return f'{str(self.date)},{str(self.price)},{self.category}'
 
+    class Meta:
+        ordering = ('-date',)
+
 # 収入カテゴリ
 class IncomeCategory(models.Model):
     name = models.CharField('収入カテゴリ', max_length=32)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('id',)
 
 # 収入項目
 class IncomeItem(models.Model):
@@ -53,6 +68,9 @@ class IncomeItem(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('id',)
+
 # ユーザー設定収入項目
 class IncomeOrigItem(models.Model):
     account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -61,6 +79,9 @@ class IncomeOrigItem(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('id',)
 
 # 収入
 class Income(models.Model):
@@ -75,8 +96,14 @@ class Income(models.Model):
     def __str__(self):
         return f'{str(self.date)},{str(self.price)},{self.category}'
 
+    class Meta:
+        ordering = ('-date',)
+
 # 予算テーブル
 class Budget(models.Model):
     year = models.IntegerField('年')
     month = models.IntegerField('月')
     budget_limit = models.IntegerField('月予算')
+
+    class Meta:
+        ordering = ('-month',)
