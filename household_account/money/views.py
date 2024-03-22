@@ -65,11 +65,6 @@ class PaymentList(LoginRequiredMixin, ListView):
             if category:
                 queryset = queryset.filter(category=category)
 
-            # # ユーザーで絞り込み
-            # account_id = form.cleaned_data.get('account_id')
-            # if account_id:
-            #     queryset = queryset.filter(account_id=account_id)
-
         return queryset
 
     def get_context_data(self, **kwargs): # オーバーライド
@@ -77,11 +72,6 @@ class PaymentList(LoginRequiredMixin, ListView):
         context['page_title'] = '支出一覧' # list.htmlで使用
         context['search_form'] = self.form  # search_form変数をcontextに追加
         context['lists'] = self.get_queryset() # get_queryset関数内の変数は{{lists.変数名}}で使用可能
-
-        # user = self.request.user  # ログイン中のユーザーを取得
-        # # if user.is_authenticated: # ログイン中のユーザーの account_id をコンテキストに追加
-        # context['login_account_id'] = user.account_id
-        # print(context['login_account_id']) # 確認用
 
         return context # テンプレートへcontextを渡す
 
@@ -146,6 +136,11 @@ class IncomeList(LoginRequiredMixin, ListView):
         context['page_title'] = '収入一覧'  # list.htmlで使用
         context['search_form'] = self.form
         context['lists'] = self.get_queryset()
+
+        # user = self.request.user  # ログイン中のユーザーを取得
+        # # if user.is_authenticated: # ログイン中のユーザーの account_id をコンテキストに追加
+        # context['login_account_id'] = user.account_id
+        # print(context['login_account_id']) # 確認用
 
         return context
 
