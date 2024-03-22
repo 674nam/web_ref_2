@@ -209,10 +209,17 @@ class PaymentOrigItemRegister(LoginRequiredMixin, CreateView):
     model = PaymentOrigItem
     form_class = PaymentOrigItemForm   # 登録用フォームを設定
 
+    def get_queryset(self):
+        login_user = self.request.user  # ログイン中のユーザーを取得
+        queryset = super().get_queryset() # PaymentList.objects.all()と同等
+        queryset = queryset.filter(account_id=login_user)
+        self.form = PaymentOrigItemForm(self.request.GET or None)
+        return queryset
+
     def get_context_data(self, **kwargs): #オーバーライド
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
         context['page_title'] = 'ユーザー設定支出項目登録'
-        context['lists'] = PaymentOrigItem.objects.all()
+        context['lists'] = self.get_queryset()
         return context
 
     def get_success_url(self):
@@ -231,10 +238,17 @@ class IncomeOrigItemRegister(LoginRequiredMixin, CreateView):
     model = IncomeOrigItem
     form_class = IncomeOrigItemForm   # 登録用フォームを設定
 
+    def get_queryset(self):
+        login_user = self.request.user  # ログイン中のユーザーを取得
+        queryset = super().get_queryset() # PaymentList.objects.all()と同等
+        queryset = queryset.filter(account_id=login_user)
+        self.form = IncomeOrigItemForm(self.request.GET or None)
+        return queryset
+
     def get_context_data(self, **kwargs): #オーバーライド
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
         context['page_title'] = 'ユーザー設定収入項目登録'
-        context['lists'] = IncomeOrigItem.objects.all()
+        context['lists'] = self.get_queryset()
         return context
 
     def get_success_url(self):

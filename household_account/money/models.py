@@ -52,7 +52,7 @@ class PaymentOrigItem(models.Model):
     def __str__(self):
         return f'{self.category} ; {self.name}'
     class Meta:
-        ordering = ('id',)
+        ordering = ('category',)
 
 # ユーザー設定収入項目
 class IncomeOrigItem(models.Model):
@@ -64,7 +64,7 @@ class IncomeOrigItem(models.Model):
         return f'{self.category} ; {self.name}'
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('category',)
 
 # 支出
 class Payment(models.Model):
