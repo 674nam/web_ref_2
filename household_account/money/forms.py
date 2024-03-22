@@ -162,36 +162,47 @@ class IncomeSearchForm(forms.Form):
 
 # 支出登録フォーム
 class PaymentCreateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # ログインユーザーを取得
+        super(PaymentCreateForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['user_item'].queryset = PaymentOrigItem.objects.filter(account_id=user)
+
     class Meta:
         model = Payment
-        # fields = '__all__' # 表示するフォームの種類
-        fields = ['date','category','item', 'user_item', 'price', 'description']
+        fields = ['date', 'category', 'item', 'user_item', 'price', 'description']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
+            'description': forms.Textarea(attrs={'rows': 3})
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form'
-            # field.widget.attrs['placeholder'] = field.label フォーム内文字
-            field.widget.attrs['autocomplete'] = 'off'
 
 # 収入登録フォーム
 class IncomeCreateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # ログインユーザーを取得
+        super(IncomeCreateForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['user_item'].queryset = IncomeOrigItem.objects.filter(account_id=user)
+
     class Meta:
         model = Income
-        # fields = '__all__'
-        fields = ['date','category','item', 'user_item', 'price', 'description']
+        fields = ['date', 'category', 'item', 'user_item', 'price', 'description']
         widgets = {
-        'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
-    }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form'
-            # field.widget.attrs['placeholder'] = field.label
-            field.widget.attrs['autocomplete'] = 'off'
+            'description': forms.Textarea(attrs={'rows': 3})
+        }
+
+    # class Meta:
+    #     model = Income
+    #     # fields = '__all__'
+    #     fields = ['date','category','item', 'user_item', 'price', 'description']
+    #     widgets = {
+    #     'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
+    # }
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     for field in self.fields.values():
+    #         field.widget.attrs['class'] = 'form'
+    #         # field.widget.attrs['placeholder'] = field.label
+    #         field.widget.attrs['autocomplete'] = 'off'
 
 
 # ユーザー設定支出項目登録フォーム

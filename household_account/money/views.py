@@ -150,30 +150,60 @@ class IncomeList(LoginRequiredMixin, ListView):
         return context
 
 # 支出登録
+# class PaymentCreate(LoginRequiredMixin, CreateView):
+#     template_name = 'money/create.html'
+#     model = Payment
+#     form_class = PaymentCreateForm
+
+#     def get_context_data(self, **kwargs): #オーバーライド
+#         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+#         context['page_title'] = '支出登録' # contextに追加
+#         return context
+
+#     def get_success_url(self):
+#         return reverse_lazy('money:payment_list')
+
+#     def form_valid(self, form):
+#         # self.object = payment = form.save()
+#         login_user = self.request.user  # ログイン中のユーザーを取得
+#         self.object = payment = form.save(commit=False)
+#         payment.account_id = login_user
+#         payment.save()
+#         messages.info(self.request,
+#                         f'支出を登録しました'
+#                         f'日付:{payment.date}'
+#                         f'カテゴリ:{payment.category}'
+#                         f'金額:{payment.price}円')
+#         return redirect(self.get_success_url())
+
 class PaymentCreate(LoginRequiredMixin, CreateView):
     template_name = 'money/create.html'
     model = Payment
     form_class = PaymentCreateForm
 
-    def get_context_data(self, **kwargs): #オーバーライド
-        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
-        context['page_title'] = '支出登録' # contextに追加
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = '支出登録'
         return context
 
     def get_success_url(self):
         return reverse_lazy('money:payment_list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # ログイン中のユーザーを渡す
+        return kwargs
+
     def form_valid(self, form):
-        # self.object = payment = form.save()
-        login_user = self.request.user  # ログイン中のユーザーを取得
+        login_user = self.request.user
         self.object = payment = form.save(commit=False)
         payment.account_id = login_user
         payment.save()
         messages.info(self.request,
-                        f'支出を登録しました'
-                        f'日付:{payment.date}'
-                        f'カテゴリ:{payment.category}'
-                        f'金額:{payment.price}円')
+                      f'支出を登録しました'
+                      f'日付:{payment.date}'
+                      f'カテゴリ:{payment.category}'
+                      f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
 # 収入登録
@@ -189,6 +219,11 @@ class IncomeCreate(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('money:income_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # ログイン中のユーザーを渡す
+        return kwargs
 
     def form_valid(self, form):
         # self.object = income = form.save()
