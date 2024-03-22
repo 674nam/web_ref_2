@@ -453,10 +453,13 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
 
         # 日別支出棒グラフの素材
         df_payment_bar = pd.pivot_table(df_payment, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
-        dates_payment = list(df_payment_bar.index.values) # 日付情報をリスト化
+        # 日付のフォーマットを変更する
+        dates_payment = [date.strftime('%m/%d') for date in df_payment_bar.index]
+        # dates_payment = list(df_payment_bar.index.values) # 日付情報をリスト化
         heights_payment = [val[0] for val in df_payment_bar.values] # 金額情報をディクショナリ化
         plot_bar_payment = gen_payment.month_daily_bar_payment(x_list=dates_payment, y_list=heights_payment)
         context['payment_bar'] = plot_bar_payment
+
 
         # IncomeモデルのQuerySetを取り出す
         income_queryset = Income.objects.filter(account_id=login_user)
@@ -489,7 +492,9 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
 
         # 日別収入棒グラフの素材
         df_income_bar = pd.pivot_table(df_income, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
-        dates_income = list(df_income_bar.index.values) # 日付情報をリスト化
+                # 日付のフォーマットを変更する
+        dates_income = [date.strftime('%m/%d') for date in df_income_bar.index]
+        # dates_income = list(df_income_bar.index.values) # 日付情報をリスト化
         heights_income = [val[0] for val in df_income_bar.values] # 金額情報をディクショナリ化
         plot_bar_income = gen_income.month_daily_bar_income(x_list=dates_income, y_list=heights_income)
         context['income_bar'] = plot_bar_income

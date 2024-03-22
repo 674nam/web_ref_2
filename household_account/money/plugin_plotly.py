@@ -63,6 +63,7 @@ class GraphGenerator:
             height=200  # 棒グラフの高さを調整
         )
         fig.update_yaxes(automargin=True)
+        fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
         return fig.to_html(include_plotlyjs=False) # グラフ情報をhtml化
 
 
@@ -91,6 +92,7 @@ class GraphGenerator:
             height=200  # 棒グラフの高さを調整
         )
         fig.update_yaxes(automargin=True)
+        fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
         return fig.to_html(include_plotlyjs=False) # グラフ情報をhtml化
 
 

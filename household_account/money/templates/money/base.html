@@ -6,11 +6,17 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  {% comment %} ドロップダウン用 {% endcomment %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  {% comment %} <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> {% endcomment %}
+
   <style>
   .navbar {
   position: relative;
@@ -30,7 +36,7 @@
     <h2>
       <a href="{% url 'money:payment_list' %}" class="header-title">家計簿アプリ</a>
     </h2>
-    <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
+    {% comment %} <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
       <ul style="width:100%" class="navbar-nav mr-auto">
         <li class="nav-item">
           <a class="nav-link" href="{% url 'money:payment_create'%}">支出登録</a>
@@ -47,16 +53,56 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'money:month_graph' now_year now_month%}">月間収支</a>
         </li>
-
-        <li class="nav-item nav-link ms-auto fw-bold">
-          {% if user.is_authenticated %}
+      </ul>
+      <ul style="width:25%" class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/logout?next=">logout</a>
+        </li>
+        <li class="nav-item nav-link fw-bold">
             logined : "{{ user.account_id }}"
-          {% else %}
-            logouted
-          {% endif %}
         </li>
       </ul>
-    </nav>
+    </nav> {% endcomment %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    {% comment %} <a class="navbar-brand" href="#">Navbar</a> {% endcomment %}
+    {% comment %} <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button> {% endcomment %}
+    <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+      <ul style="width:100%" class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:payment_create'%}">支出登録</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:income_create'%}">収入登録</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:payment_list' %}">支出一覧</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:income_list'%}">収入一覧</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'money:month_graph' now_year now_month%}">月間収支</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            logined : "{{ user.account_id }}"
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+            <li><a class="dropdown-item" href="/logout?next=">logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
   </header>
 
   <div class="layout mx-auto text-center">

@@ -159,17 +159,24 @@ class IncomeSearchForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form'}),
     )
 
-
 # 支出登録フォーム
 class PaymentCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)  # ログインユーザーを取得
         super(PaymentCreateForm, self).__init__(*args, **kwargs)
+
+        # ログインユーザーの「ユーザー設定支出項目」のみ取得
         if user:
             self.fields['user_item'].queryset = PaymentOrigItem.objects.filter(account_id=user)
 
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form'
+            # field.widget.attrs['placeholder'] = field.label # フォーム内初期表示テキスト
+            field.widget.attrs['autocomplete'] = 'off' # 日付選択時に邪魔になるオートコンプリートを非表示
+
     class Meta:
         model = Payment
+        # fields = '__all__'
         fields = ['date', 'category', 'item', 'user_item', 'price', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3})
@@ -183,27 +190,17 @@ class IncomeCreateForm(forms.ModelForm):
         if user:
             self.fields['user_item'].queryset = IncomeOrigItem.objects.filter(account_id=user)
 
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form'
+            # field.widget.attrs['placeholder'] = field.label
+            field.widget.attrs['autocomplete'] = 'off'
+
     class Meta:
         model = Income
         fields = ['date', 'category', 'item', 'user_item', 'price', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3})
         }
-
-    # class Meta:
-    #     model = Income
-    #     # fields = '__all__'
-    #     fields = ['date','category','item', 'user_item', 'price', 'description']
-    #     widgets = {
-    #     'description': forms.Textarea(attrs={'rows': 3})  # 備考欄の大きさを3行に設定
-    # }
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     for field in self.fields.values():
-    #         field.widget.attrs['class'] = 'form'
-    #         # field.widget.attrs['placeholder'] = field.label
-    #         field.widget.attrs['autocomplete'] = 'off'
-
 
 # ユーザー設定支出項目登録フォーム
 class PaymentOrigItemForm(ModelForm):
