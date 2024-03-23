@@ -5,23 +5,39 @@
 {% endblock %}
 
 {% block content %}
-  <p class="mt-5"> 削除しますか？</p>
+  <br>
+  <div style="width:70%" class="mx-auto text-center">
+    <p class="mt-5"> 削除しますか？</p>
 
-  <p class="mt-2">日付：{{ object.date }}</p>
+  {% comment %} <p class="mt-2">日付：{{ object.date }}</p>
   <p class="mt-2">カテゴリ：{{ object.category }}</p>
   <p class="mt-2">項目：{{ object.item }}</p>
   <p class="mt-2">金額：{{ object.price }}</p>
-  <p class="mt-2">備考： {% if object.description %}{{ object.description }}{% endif %}</p>
+  <p class="mt-2">備考：{% if object.description %}{{ object.description }}{% endif %}</p>
   <p class="mt-2">ユーザー：{{ object.account_id }}</p>
-
-<form method="post">
+  <form method="post">
   {% csrf_token %}
-  {% if '支出' in page_title %}
-    <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>&emsp;
-  {% else %}
-    <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>&emsp;
-  {% endif %}
-    <button type='submit' class="btn btn-danger" name="button">削除</button>
-</form>
+  <button type='submit' class="btn btn-danger" name="button">削除</button>
+  </form> {% endcomment %}
+
+    <table class="table">
+      <tr><th class='text-end'>日付：</th><td class='text-start'>{{ object.date }}</td></tr>
+      <tr><th class='text-end'>カテゴリ：</th><td class='text-start'>{{ object.category }}</td></tr>
+      <tr><th class='text-end'>項目：</th><td class='text-start'>{{ object.item }}</td></tr>
+      <tr><th class='text-end'>金額：</th><td class='text-start'>{{ object.price }}</td></tr>
+      <tr><th class='text-end'>備考：</th><td class='text-start'>{% if object.description %}{{ object.description }}{% endif %}</td></tr>
+      <tr><th class='text-end'>ユーザー：</th><td class='text-start'>{{ object.account_id }}</td></tr>
+    </table>
+      <form method="post">
+      {% csrf_token %}
+        <button type='submit' class="btn btn-danger" name="button">削除</button>
+      </form>
+    <br>
+    {% if '支出' in page_title %}
+      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+    {% else %}
+      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+    {% endif %}
+  </div>
 
 {% endblock %}

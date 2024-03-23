@@ -1,7 +1,7 @@
 {% extends 'accounts/base.html' %}
 
 {% block title %}
-  <div class="h2">Create account</div>
+  <div class="h2">ユーザー登録</div>
 {% endblock %}
 
 {% block content %}
@@ -11,10 +11,11 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
       {% for field in form %}
+  <div class="mt-2">
       {{ field.label }}
       {{ field }}
       {{ field.errors }}
-      <br>
+  </div>
       {% endfor %}
 
   <div class="mt-3">

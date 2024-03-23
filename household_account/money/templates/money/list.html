@@ -43,26 +43,26 @@
     <th>ユーザー</th>
   </tr>
 
-  {% for payment in object_list %}
+  {% for list in object_list %}
   <tr>
-    <td>{{ payment.date }}</td>
-    <td>{{ payment.category }}</td>
-    <td>{{ payment.item.name }}</td>
-    <td>{{ payment.user_item.name }}</td>
-    <td>{{ payment.price|intcomma}}</td>
+    <td>{{ list.date }}</td>
+    <td>{{ list.category }}</td>
+    <td>{{ list.item.name }}</td>
+    <td>{{ list.user_item.name }}</td>
+    <td>{{ list.price|intcomma}}</td>
     <td>
-      {% if payment.description %}
-      {{ payment.description }}
+      {% if list.description %}
+      {{ list.description }}
       {% endif %}
     </td>
-    <td>{{ payment.account_id }}</td>
+    <td>{{ list.account_id }}</td>
     <td>
       {% if '支出' in page_title %}
-      <a class="btn btn-primary" href="{% url 'money:payment_update' payment.pk %}">更新</a>
-      <a class="btn btn-danger" href="{% url 'money:payment_delete' payment.pk %}">削除</a>
+      <a class="btn btn-primary" href="{% url 'money:payment_update' list.pk %}">更新</a>
+      <a class="btn btn-danger" href="{% url 'money:payment_delete' list.pk %}">削除</a>
       {% else %}
-      <a class="btn btn-primary" href="{% url 'money:income_update' payment.pk %}">更新</a>
-      <a class="btn btn-danger" href="{% url 'money:income_delete' payment.pk %}">削除</a>
+      <a class="btn btn-primary" href="{% url 'money:income_update' list.pk %}">更新</a>
+      <a class="btn btn-danger" href="{% url 'money:income_delete' list.pk %}">削除</a>
       {% endif %}
     </td>
   </tr>

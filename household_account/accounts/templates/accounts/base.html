@@ -24,33 +24,54 @@
 </head>
 
 <body>
-  <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
-    <ul style="width:100%" class="navbar-nav mr-auto">
-      {% comment %} <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:index' %}">index</a>
-      </li> {% endcomment %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:login' %}">login</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:signup' %}">signup</a>
-      </li>
-      <li class="nav-item nav-link ms-auto fw-bold">
-        {% if user.is_authenticated %}
-          logined : "{{ user.account_id }}"
-        {% else %}
-          logouted
-        {% endif %}
-      </li>
-    </ul>
-  </nav>
+  <header class="page-header">
+    <h2>
+      <a href="{% url 'money:payment_list' %}" class="header-title">家計簿アプリ</a>
+    </h2>
+    <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
+      <ul style="width:100%" class="navbar-nav mr-auto">
+        {% comment %} <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:index' %}">index</a>
+        </li> {% endcomment %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:login' %}">login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:signup' %}">signup</a>
+        </li>
+        <li class="nav-item nav-link ms-auto fw-bold">
+          {% if user.is_authenticated %}
+            logined : "{{ user.account_id }}"
+          {% else %}
+            logouted
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-  <br>
-  <h1 class="text-center">家計簿アプリ</h1>
+  {% comment %} <br>
   <div class="container mx-auto text-center">
     {% block title %}{% endblock %}
     {% block content %}{% endblock %}
-  </div>
-</body>
+  </div> {% endcomment %}
 
+  <div class="layout mx-auto text-center">
+      {% block title %}{% endblock %}
+  </div>
+
+    {% if messages %}
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endif %}
+
+  <div class="container mx-auto text-center">
+        {% block content %}{% endblock %}
+  </div>
+
+</body>
 </html>

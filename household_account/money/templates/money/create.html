@@ -6,30 +6,32 @@
 
 {% block content %}
 <br>
-  {% if '支出' in page_title %}
+{% if '支出' in page_title %}
   <p><a href="{% url 'money:payment_item_register' %}" >ユーザー設定支出項目登録ページへ</a></p>
-  {% else %}
+{% else %}
   <p><a href="{% url 'money:income_item_register' %}" >ユーザー設定収入項目登録ページへ</a></p>
-  {% endif %}
+{% endif %}
 
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
-    <div class="mt-2">
-      {{ field.errors }}
-      <label class="label mr-4">{{ field.label }}</label>
-      {{ field }}
-    </div>
-    {% endfor %}
+<form method="POST">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+  <div class="mt-2">
+    {{ field.errors }}
+    <label class="label mr-4">{{ field.label }}</label>
+    {{ field }}
+  </div>
+  {% endfor %}
+  <button class="btn btn-primary" type="submit" name="button">登録</button>
+</form>
 
-    {% if '支出' in page_title %}
-      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>&emsp;
-    {% else %}
-      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>&emsp;
-    {% endif %}
-    <button class="btn btn-primary" type="submit" name="button">登録</button>
-  </form>
+<br>
+{% if '支出' in page_title %}
+  <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+{% else %}
+  <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+{% endif %}
+
 
 {% comment %} 最新 {% endcomment %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
