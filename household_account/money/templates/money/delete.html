@@ -7,7 +7,7 @@
 {% block content %}
   <br>
   <div style="width:70%" class="mx-auto text-center">
-    <p class="mt-5"> 削除しますか？</p>
+    <p> 削除しますか？</p>
 
   {% comment %} <p class="mt-2">日付：{{ object.date }}</p>
   <p class="mt-2">カテゴリ：{{ object.category }}</p>
@@ -28,16 +28,22 @@
       <tr><th class='text-end'>備考：</th><td class='text-start'>{% if object.description %}{{ object.description }}{% endif %}</td></tr>
       <tr><th class='text-end'>ユーザー：</th><td class='text-start'>{{ object.account_id }}</td></tr>
     </table>
-      <form method="post">
+  </div>
+  <div style="width:40%" class="mx-auto text-start">
+    <form method="post">
       {% csrf_token %}
-        <button type='submit' class="btn btn-danger" name="button">削除</button>
-      </form>
-    <br>
-    {% if '支出' in page_title %}
-      <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
-    {% else %}
-      <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
-    {% endif %}
+        <div class="mx-auto text-center">
+          <button type='submit' class="btn btn-danger" name="button">削除</button>
+        </div>
+    </form>
+  </div>
+  <br>
+  <div class="mx-auto text-center">
+  {% if '支出' in page_title %}
+    <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+  {% else %}
+    <a class="btn btn btn-primary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+  {% endif %}
   </div>
 
 {% endblock %}
