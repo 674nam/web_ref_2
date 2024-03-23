@@ -1,5 +1,7 @@
 {% extends 'money/base.html' %}
 {% load humanize %}
+{% load money %}{% comment %} カスタムテンプレートタグ {% endcomment %}
+
 {% comment %} payment_list.htmlとincome_list.htmlを統一 {% endcomment %}
 
 {% block title %}
@@ -7,72 +9,100 @@
 {% endblock %}
 
 {% block content %}
-  <form class="mt-1" id="search-form" action="" method="GET">
-    {% csrf_token %}
-{% comment %} ビューのget_context_dataでsearch_formを登録 {% endcomment %}
-    <div>
-      <label class="label mr-4">年月</label>
-      {{ search_form.year }}
-      {{ search_form.month }}
-    </div>
-    <div class="mt-2">
-      <label class="label mr-4">金額</label>
-      {{ search_form.greater_than }}
-      <span class="ml-2 mr-4">～</span>
-      {{ search_form.less_than }}
-    </div>
-    <div class="mt-2">
-      <label class="label mr-4">カテゴリ</label>
-      {{ search_form.category }}
-      {% comment %} <label class="label mr-4">ユーザー</label>
-      {{ search_form.account_id }} {% endcomment %}
-    </div>
-    <div class="mt-2">
-      {{ search_form.key_word }}
-      <button class="btn btn-primary" type="submit">検索</button>
-    </div>
-  </form>
-
-  <table class="table mt-3">
-    <tr>
-      <th>日付</th>
-      <th>カテゴリ</th>
-      <th>項目</th>
-      <th>ユーザー設定項目</th>
-      <th>金額</th>
-      <th>備考</th>
-      <th>ユーザー</th>
-    </tr>
-
-    {% for list in lists %}
-{% comment %} ビューのget_context_dataでlistsを登録 {% endcomment %}
-    <tr>
-      <td>{{ list.date }}</td>
-      <td>{{ list.category }}</td>
-      <td>{{ list.item.name }}</td>
-      <td>{{ list.user_item.name }}</td>
-      <td>{{ list.price|intcomma}}</td>
-      <td>
-        {% if list.description %}
-        {{ list.description }}
-        {% endif %}
-      </td>
-      <td>{{ list.account_id }}</td>
-      <td>
-        {% if '支出' in page_title %}
-            <a class="btn btn-primary" href="{% url 'money:payment_update' list.pk %}">更新</a>
-            <a class="btn btn-danger" href="{% url 'money:payment_delete' list.pk %}">削除</a>
-        {% else %}
-            <a class="btn btn-primary" href="{% url 'money:income_update' list.pk %}">更新</a>
-            <a class="btn btn-danger" href="{% url 'money:income_delete' list.pk %}">削除</a>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-
-  <div class="mt-5">
-    <p>ページネーション予定位置</p>
+<form class="mt-1" id="search-form" action="" method="GET">
+  {% csrf_token %}
+  <div>
+    <label class="label mr-4">年月</label>
+    {{ search_form.year }}
+    {{ search_form.month }}
   </div>
+  <div class="mt-2">
+    <label class="label mr-4">金額</label>
+    {{ search_form.greater_than }}
+    <span class="ml-2 mr-4">～</span>
+    {{ search_form.less_than }}
+  </div>
+  <div class="mt-2">
+    <label class="label mr-4">カテゴリ</label>
+    {{ search_form.category }}
+  </div>
+  <div class="mt-2">
+    {{ search_form.key_word }}
+    <button class="btn btn-primary" type="submit">検索</button>
+  </div>
+</form>
+
+<table class="table mt-3">
+  <tr>
+    <th>日付</th>
+    <th>カテゴリ</th>
+    <th>項目</th>
+    <th>ユーザー設定項目</th>
+    <th>金額</th>
+    <th>備考</th>
+    <th>ユーザー</th>
+  </tr>
+
+  {% for payment in object_list %}
+  <tr>
+    <td>{{ payment.date }}</td>
+    <td>{{ payment.category }}</td>
+    <td>{{ payment.item.name }}</td>
+    <td>{{ payment.user_item.name }}</td>
+    <td>{{ payment.price|intcomma}}</td>
+    <td>
+      {% if payment.description %}
+      {{ payment.description }}
+      {% endif %}
+    </td>
+    <td>{{ payment.account_id }}</td>
+    <td>
+      {% if '支出' in page_title %}
+      <a class="btn btn-primary" href="{% url 'money:payment_update' payment.pk %}">更新</a>
+      <a class="btn btn-danger" href="{% url 'money:payment_delete' payment.pk %}">削除</a>
+      {% else %}
+      <a class="btn btn-primary" href="{% url 'money:income_update' payment.pk %}">更新</a>
+      <a class="btn btn-danger" href="{% url 'money:income_delete' payment.pk %}">削除</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?{% url_replace request 'page' 1 %}">&laquo; first</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">&laquo; prev</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link">&laquo; first</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link">&laquo; prev</a>
+    </li>
+    {% endif %}
+    <li class="page-item">
+      <a class="page-link">{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</a>
+    </li>
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">next &raquo;</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">last &raquo;</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link">next &raquo;</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link">last &raquo;</a>
+    </li>
+    {% endif %}
+  </ul>
 
 {% endblock %}

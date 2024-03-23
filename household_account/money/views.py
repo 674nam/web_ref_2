@@ -7,8 +7,11 @@ import numpy as np # グラフ
 import pandas as pd # グラフ
 from django_pandas.io import read_frame # グラフ
 from django.contrib.auth import get_user_model # 設定されたユーザーモデルのインポート
+# from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory \
+                    ,PaymentItem, IncomeItem\
                     , PaymentOrigItem, IncomeOrigItem
 from .forms import PaymentSearchForm, IncomeSearchForm \
                     , PaymentCreateForm, IncomeCreateForm \
@@ -22,6 +25,7 @@ class PaymentList(LoginRequiredMixin, ListView):
     template_name = 'money/list.html'
     model = Payment
     ordering = '-date'
+    paginate_by = 5  # ページごとに表示するアイテムの数
 
     def get_queryset(self):
         login_user = self.request.user  # ログイン中のユーザーを取得
@@ -52,27 +56,27 @@ class PaymentList(LoginRequiredMixin, ListView):
             if less_than:
                 queryset = queryset.filter(price__lte=less_than)
 
-            # キーワードの絞り込み
-            key_word = form.cleaned_data.get('key_word')
-            if key_word:
-                # 空欄で区切り、順番に絞る、and検索
-                if key_word:
-                    for word in key_word.split():
-                        queryset = queryset.filter(description__icontains=word)
-
             # カテゴリで絞り込み
             category = form.cleaned_data.get('category')
             if category:
                 queryset = queryset.filter(category=category)
 
+            # キーワードの絞り込み
+            key_word = form.cleaned_data.get('key_word')
+            if key_word:
+                # スペース区切り検索（項目、ユーザー設定項目、備考から検索）
+                if key_word:
+                    for word in key_word.split():
+                        queryset = queryset.filter(
+                                Q(description__icontains=word)
+                                |Q(item__name__icontains=word)
+                                |Q(user_item__name__icontains=word))
         return queryset
 
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs)  # 親クラスの get_context_dataメソッドを実行
         context['page_title'] = '支出一覧' # list.htmlで使用
         context['search_form'] = self.form  # search_form変数をcontextに追加
-        context['lists'] = self.get_queryset() # get_queryset関数内の変数は{{lists.変数名}}で使用可能
-
         return context # テンプレートへcontextを渡す
 
 
@@ -82,6 +86,7 @@ class IncomeList(LoginRequiredMixin, ListView):
     template_name = 'money/list.html'
     model = Income
     ordering = '-date'
+    paginate_by = 5
 
     def get_queryset(self):
         login_user = self.request.user  # ログイン中のユーザーを取得
@@ -111,37 +116,27 @@ class IncomeList(LoginRequiredMixin, ListView):
             if less_than:
                 queryset = queryset.filter(price__lte=less_than)
 
-            # キーワードの絞り込み
-            key_word = form.cleaned_data.get('key_word')
-            if key_word:
-                # 空欄で区切り、順番に絞る、and検索
-                if key_word:
-                    for word in key_word.split():
-                        queryset = queryset.filter(description__icontains=word)
-
             # カテゴリで絞り込み
             category = form.cleaned_data.get('category')
             if category:
                 queryset = queryset.filter(category=category)
 
-            # # ユーザーで絞り込み
-            # account_id = form.cleaned_data.get('account_id')
-            # if account_id:
-            #     queryset = queryset.filter(account_id=account_id)
-
+            # キーワードの絞り込み
+            key_word = form.cleaned_data.get('key_word')
+            if key_word:
+                # スペース区切り検索（項目、ユーザー設定項目、備考から検索）
+                if key_word:
+                    for word in key_word.split():
+                        queryset = queryset.filter(
+                                Q(description__icontains=word)
+                                |Q(item__name__icontains=word)
+                                |Q(user_item__name__icontains=word))
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = '収入一覧'  # list.htmlで使用
         context['search_form'] = self.form
-        context['lists'] = self.get_queryset()
-
-        # user = self.request.user  # ログイン中のユーザーを取得
-        # # if user.is_authenticated: # ログイン中のユーザーの account_id をコンテキストに追加
-        # context['login_account_id'] = user.account_id
-        # print(context['login_account_id']) # 確認用
-
         return context
 
 # 支出登録
@@ -195,10 +190,10 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
         payment.account_id = login_user
         payment.save()
         messages.info(self.request,
-                      f'支出を登録しました'
-                      f'日付:{payment.date}'
-                      f'カテゴリ:{payment.category}'
-                      f'金額:{payment.price}円')
+                        f'支出を登録しました'
+                        f'日付:{payment.date}'
+                        f'カテゴリ:{payment.category}'
+                        f'金額:{payment.price}円')
         return redirect(self.get_success_url())
 
 # 収入登録
