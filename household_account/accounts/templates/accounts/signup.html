@@ -5,22 +5,32 @@
 {% endblock %}
 
 {% block content %}
-<br>
-  <p><a href="{% url 'accounts:familyregister' %}" >家名の登録ページへ</a></p>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+  <div class="mt-5 mx-auto text-center">
+    <p><a href="{% url 'accounts:familyregister' %}" >家名の登録ページへ</a></p>
+  </div>
+
+  <div style="width:40%" class="mx-auto text-center">
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
       {% for field in form %}
-  <div class="mt-2">
-      {{ field.label }}
+        <div class="mt-2">
+          {{ field.errors }}
+          <label class="label mr-4">
+            {{ field.label }}：
+          </label>
+          {{ field }}
+        </div>
+    {% comment %} <div class="mt-2">
+      {{ field.label }}：
       {{ field }}
       {{ field.errors }}
-  </div>
-      {% endfor %}
+    </div> {% endcomment %}
+        {% endfor %}
 
-  <div class="mt-3">
-    <button type="submit" class="btn btn-primary">登録</button>
-    <a href="{% url 'accounts:login' %}" class="btn btn-secondary">戻る</a>
-  </div>
-</form>
+    <div class="mt-3 mx-auto text-center">
+      <button type="submit" class="btn btn-primary">登録</button>
+      <a href="{% url 'accounts:login' %}" class="btn btn-secondary">戻る</a>
+    </div>
+  </form>
 {% endblock %}

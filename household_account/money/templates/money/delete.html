@@ -5,10 +5,6 @@
 {% endblock %}
 
 {% block content %}
-  <br>
-  <div style="width:70%" class="mx-auto text-center">
-    <p> 削除しますか？</p>
-
   {% comment %} <p class="mt-2">日付：{{ object.date }}</p>
   <p class="mt-2">カテゴリ：{{ object.category }}</p>
   <p class="mt-2">項目：{{ object.item }}</p>
@@ -20,6 +16,7 @@
   <button type='submit' class="btn btn-danger" name="button">削除</button>
   </form> {% endcomment %}
 
+  <div style="width:70%" class="mt-5 mx-auto text-center">
     <table class="table">
       <tr><th class='text-end'>日付：</th><td class='text-start'>{{ object.date }}</td></tr>
       <tr><th class='text-end'>カテゴリ：</th><td class='text-start'>{{ object.category }}</td></tr>
@@ -37,8 +34,8 @@
         </div>
     </form>
   </div>
-  <br>
-  <div class="mx-auto text-center">
+
+  <div class="mt-3 mx-auto text-center">
   {% if '支出' in page_title %}
     <a class="btn btn btn-primary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
   {% else %}
