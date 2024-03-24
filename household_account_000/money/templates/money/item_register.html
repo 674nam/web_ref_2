@@ -1,0 +1,54 @@
+{% extends 'money/base.html' %}
+
+{% block title %}
+  <div class="h2">{{ page_title }}</div>
+{% endblock %}
+
+{% block content %}
+  <br>
+  <div style="width:40%" class="mx-auto text-center">
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        <div class="mt-2">
+          {{ field.errors }}
+          <label class="label mr-4">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
+      <br>
+      <div class="mx-auto text-center">
+        {% if '支出' in page_title %}
+          <a href="{% url 'money:payment_create' %}" class="btn btn-secondary">戻る</a>&emsp;
+        {% else %}
+          <a href="{% url 'money:income_create' %}" class="btn btn-secondary">戻る</a>&emsp;
+        {% endif %}
+        <button type="submit" class="btn btn-primary">登録</button>
+      </div>
+    </form>
+  </div>
+  {% comment %} <br>
+  <div class="mx-auto text-center">
+    {% if '支出' in page_title %}
+      <a href="{% url 'money:payment_create' %}" class="btn btn-secondary">戻る</a>
+    {% else %}
+      <a href="{% url 'money:income_create' %}" class="btn btn-secondary">戻る</a>
+    {% endif %}
+  </div> {% endcomment %}
+
+<table class="table mt-3">
+  <tr>
+    <th>ユーザー設定項目</th>
+    <th>カテゴリ</th>
+    <th>ユーザー</th>
+  </tr>
+{% for list in lists %}
+  <tr>
+    <td>{{ list.category }}</td>
+    <td>{{ list.name }}</td>
+    <td>{{ list.account_id }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

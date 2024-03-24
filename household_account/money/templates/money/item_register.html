@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <br>
-  <div style="width:40%" class="mx-auto text-center">
+  <div style="width:40%" class="mt-5 mx-auto text-center">
     <form method="POST">
       {% csrf_token %}
       {{ form.non_field_errors }}
@@ -17,8 +16,8 @@
           {{ field }}
         </div>
       {% endfor %}
-      <br>
-      <div class="mx-auto text-center">
+
+      <div class="mt-5 mx-auto text-center">
         {% if '支出' in page_title %}
           <a href="{% url 'money:payment_create' %}" class="btn btn-secondary">戻る</a>&emsp;
         {% else %}
@@ -28,14 +27,6 @@
       </div>
     </form>
   </div>
-  {% comment %} <br>
-  <div class="mx-auto text-center">
-    {% if '支出' in page_title %}
-      <a href="{% url 'money:payment_create' %}" class="btn btn-secondary">戻る</a>
-    {% else %}
-      <a href="{% url 'money:income_create' %}" class="btn btn-secondary">戻る</a>
-    {% endif %}
-  </div> {% endcomment %}
 
 <table class="table mt-3">
   <tr>

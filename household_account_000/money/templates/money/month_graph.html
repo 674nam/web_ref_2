@@ -1,0 +1,112 @@
+{% extends 'money/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="month-pager mx-auto text-center">
+  <a href="{% url 'money:month_graph' prev_year prev_month %}">
+    前月
+  </a>
+  <span class="ml-4 mr-4">{{ year_month }}</span>
+  <a href="{% url 'money:month_graph' next_year next_month %}">
+    次月
+  </a>
+</div>
+
+{% comment %} グラフ {% endcomment %}
+{% autoescape off %}
+<h4>支出</h4>
+<div class="row mt-2">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">月間支出</h6>
+          <table class="table">
+            <tr>
+              <th>カテゴリ</th>
+              <th>金額</th>
+            </tr>
+            {% for key, value in payment_table_set.items %}
+            <tr>
+              <td>{{ key }}</td>
+              <td>{{ value|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>合計</td>
+              <td>{{ total_payment|intcomma }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+{% comment %} 円グラフ {% endcomment %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+        <h6 class="card-title">月間支出</h6>
+          {{ payment_pie }}
+        </div>
+      </div>
+    </div>
+{% comment %} 棒グラフ {% endcomment %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+        <h6 class="card-title">日別支出</h6>
+          {{ payment_bar }}
+        </div>
+      </div>
+    </div>
+</div>
+
+<h4>収入</h4>
+<div class="row mt-2">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">月間収入</h6>
+          <table class="table">
+            <tr>
+              <th>カテゴリ</th>
+              <th>金額</th>
+            </tr>
+            {% for key, value in income_table_set.items %}
+            <tr>
+              <td>{{ key }}</td>
+              <td>{{ value|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>合計</td>
+              <td>{{ total_income|intcomma }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+{% comment %} 円グラフ {% endcomment %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+        <h6 class="card-title">月間収入</h6>
+          {{ income_pie }}
+        </div>
+      </div>
+    </div>
+{% comment %} 棒グラフ {% endcomment %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+        <h6 class="card-title">日別収入</h6>
+          {{ income_bar }}
+        </div>
+      </div>
+    </div>
+</div>
+{% endautoescape %}
+{% endblock %}
+
+{% block extrajs %}
+{% comment %} plotly表示用のjsを読み込む {% endcomment %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}

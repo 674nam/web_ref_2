@@ -214,28 +214,3 @@ class IncomeOrigItemForm(ModelForm):
         model = IncomeOrigItem
         fields = ['category', 'name']
 
-
-# 推移グラフの絞り込みフォーム
-class TransitionGraphSearchForm(forms.Form):
-    payment_category = forms.ModelChoiceField(
-        label='支出カテゴリでの絞り込み',
-        required=False,
-        queryset=PaymentCategory.objects.order_by('name'),
-    )
-
-    income_category = forms.ModelChoiceField(
-        label='収入カテゴリでの絞り込み',
-        required=False,
-        queryset=IncomeCategory.objects.order_by('name'),
-    )
-
-    model_choice = (
-        ('', '---------'),
-        ('Payment', 'Payment'),
-        ('Income', 'Income'),
-    )
-    graph_visible = forms.ChoiceField(
-                        required=False,
-                        label='表示グラフ',
-                        choices=model_choice,
-                        )

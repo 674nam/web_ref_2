@@ -41,19 +41,9 @@
     {% endif %}
   </div>
 
-  {% comment %} 最新 {% endcomment %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  {% comment %} ↑ base.htmlで読み込んでいる {% endcomment %}
+  {% comment %} datepiker 土日カラー{% endcomment %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-
-  {% comment %} 古いバージョン {% endcomment %}
-  {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> {% endcomment %}
-  {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css"> {% endcomment %}
-  {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> {% endcomment %}
-
-
-  {% comment %} date piker使用 土日カラー付き{% endcomment %}
   <script type="text/javascript">
     $(function() {
       $('#id_date').datepicker({

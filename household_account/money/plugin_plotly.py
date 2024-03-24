@@ -100,49 +100,47 @@ class GraphGenerator:
                         y_list_income=None):
         fig = go.Figure()
 
-        # 折れ線グラフ：月間支出
-        if x_list_payment and y_list_payment:
-            fig.add_trace(go.Scatter(
-                x=x_list_payment,
-                y=y_list_payment,
-                mode='lines',
-                name='payment',
-                opacity=0.5,
-                line=dict(color=self.payment_color,
-                        width=5, )
-            ))
-
-        # 折れ線グラフ：月間収入
-        if x_list_income and y_list_income:
-            fig.add_trace(go.Scatter(
-                x=x_list_income,
-                y=y_list_income,
-                mode='lines',
-                name='income',
-                opacity=0.5,
-                line=dict(color=self.income_color,
-                        width=5, )
-            ))
-
-        # # 棒グラフ：月間支出
+        # # 折れ線グラフ：月間支出
         # if x_list_payment and y_list_payment:
-        #     fig.add_trace(go.Bar(
+        #     fig.add_trace(go.Scatter(
         #         x=x_list_payment,
         #         y=y_list_payment,
+        #         mode='lines',
         #         name='payment',
         #         opacity=0.5,
-        #         marker_color=self.payment_color,
+        #         line=dict(color=self.payment_color,
+        #                 width=5, )
         #     ))
 
-        # # 棒グラフ：月間収入
+        # # 折れ線グラフ：月間収入
         # if x_list_income and y_list_income:
-        #     fig.add_trace(go.Bar(
+        #     fig.add_trace(go.Scatter(
         #         x=x_list_income,
         #         y=y_list_income,
+        #         mode='lines',
         #         name='income',
         #         opacity=0.5,
-        #         maker_color=self.income_color,
+        #         line=dict(color=self.income_color,
+        #                 width=5, )
         #     ))
+
+        # 棒グラフ：月間支出
+        if x_list_payment and y_list_payment:
+            fig.add_trace(go.Bar(
+                x=x_list_payment,
+                y=y_list_payment,
+                name='payment',
+                marker_color=self.payment_color,
+            ))
+
+        # 棒グラフ：月間収入
+        if x_list_income and y_list_income:
+            fig.add_trace(go.Bar(
+                x=x_list_income,
+                y=y_list_income,
+                name='income',
+                marker_color=self.income_color,
+            ))
 
         # グラフの装飾
         fig.update_layout(
@@ -158,10 +156,9 @@ class GraphGenerator:
                 linewidth=1,
                 rangemode='tozero'
                 ),
-                height=400  # 棒グラフの高さ調整
+                height=400  # グラフの高さ調整
             )
 
-        fig.update_yaxes(showticklabels=True)  # 目盛りを表示
-        # fig.update_yaxes(visible=False, fixedrange=True)
+        fig.update_yaxes(showticklabels=True)  # 目盛り表示
         fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
         return fig.to_html(include_plotlyjs=False)

@@ -5,17 +5,6 @@
 {% endblock %}
 
 {% block content %}
-  {% comment %} <p class="mt-2">日付：{{ object.date }}</p>
-  <p class="mt-2">カテゴリ：{{ object.category }}</p>
-  <p class="mt-2">項目：{{ object.item }}</p>
-  <p class="mt-2">金額：{{ object.price }}</p>
-  <p class="mt-2">備考：{% if object.description %}{{ object.description }}{% endif %}</p>
-  <p class="mt-2">ユーザー：{{ object.account_id }}</p>
-  <form method="post">
-  {% csrf_token %}
-  <button type='submit' class="btn btn-danger" name="button">削除</button>
-  </form> {% endcomment %}
-
   <div style="width:70%" class="mt-5 mx-auto text-center">
     <table class="table">
       <tr><th class='text-end'>日付：</th><td class='text-start'>{{ object.date }}</td></tr>

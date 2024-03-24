@@ -7,17 +7,6 @@
 {% block content %}
   <br>
   <div style="width:40%" class="mx-auto text-center">
-  {% comment %}   <form method="post">
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-      {% for field in form %}
-        <table class="table">
-          <tr><th class='text-end'>{{ field.label }}：</th>
-              <td class='text-start'>{{ field }}</td>
-          </tr>
-        </table>
-      {{ form.errors }}
-      {% endfor %} {% endcomment %}
     <form method="post">
       {% csrf_token %}
       {{ form.non_field_errors }}
