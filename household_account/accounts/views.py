@@ -1,6 +1,8 @@
 from django.contrib.auth import login, authenticate
-from django.views.generic import TemplateView, CreateView, ListView, DeleteView
-from django.contrib.auth.views import LoginView as BaseLoginView, LogoutView as BaseLogoutView
+from django.views.generic import TemplateView, CreateView, ListView \
+                                , UpdateView, DeleteView
+from django.contrib.auth.views import LoginView as BaseLoginView \
+                                    , LogoutView as BaseLogoutView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin # ログインユーザーのみ閲覧可能
@@ -12,14 +14,12 @@ from .models import User
 # ホーム
 class IndexView(TemplateView):
     template_name = "accounts/login.html"
-    # template_name = "accounts/index.html" # 不要
 
 # ユーザー登録
 class SignupView(CreateView):
     form_class = SignUpForm   # 登録用フォームを設定
     template_name = "accounts/signup.html"
     success_url = reverse_lazy("money:payment_list") # ユーザー作成後のリダイレクト先
-    # success_url = reverse_lazy("accounts:index") # 不要
 
     def form_valid(self, form): # ユーザー作成後にそのままログイン状態にする
         response = super().form_valid(form)
@@ -52,6 +52,25 @@ class MyPageList(LoginRequiredMixin, ListView):
         context['page_title'] = 'マイページ'
         return context # テンプレートへcontextを渡す
 
+# ユーザー情報更新
+class UserUpdate(LoginRequiredMixin, UpdateView):
+    template_name = 'accounts/user_update.html'
+    model = User
+    form_class = SignUpForm
+
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = 'ユーザー情報更新' # contextに追加
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:mypage')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.info(self.request,'ユーザー情報を更新しました。')
+        return redirect(self.get_success_url())
+
 # ユーザー削除
 class UserDelete(LoginRequiredMixin, DeleteView):
     template_name = 'accounts/user_delete.html'
@@ -77,4 +96,3 @@ class LoginView(BaseLoginView):
 # ログアウト
 class LogoutView(BaseLogoutView):
     success_url = reverse_lazy("accounts:login")
-    # success_url = reverse_lazy("accounts:index") # 不要

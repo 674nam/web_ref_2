@@ -255,7 +255,6 @@ class IncomeOrigItemRegister(LoginRequiredMixin, CreateView):
         income.save()
         return redirect(self.get_success_url())
 
-
 # 支出更新
 class PaymentUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'money/create.html'

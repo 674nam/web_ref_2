@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block content %}
-  <div style="width:70%" class="mt-5 mx-auto text-center">
+  <p class="mt-2 mx-auto text-center">以下ユーザー情報を削除し、退会しますか？</p>
+  <div style="width:50%" class="mt-5 mx-auto text-center">
     <table class="table">
       <tr><th class='text-end'>account_id：</th><td class='text-start'>{{ object.account_id }}</td></tr>
       <tr><th class='text-end'>email：</th><td class='text-start'>{{ object.email }}</td></tr>
@@ -13,17 +14,18 @@
       <tr><th class='text-end'>名前：</th><td class='text-start'>{{ object.first_name }}</td></tr>
     </table>
   </div>
-  <div style="width:40%" class="mx-auto text-start">
+  <div class="mx-auto text-start">
     <form method="post">
       {% csrf_token %}
         <div class="mx-auto text-center">
-          <button type='submit' class="btn btn-danger" name="button">削除</button>
+          <button type='submit' class="btn btn-danger" name="button">削除</button>&emsp;
+          <a class="btn btn-secondary" href="{% url 'accounts:mypage'%}">戻る</a>
         </div>
     </form>
   </div>
 
-  <div class="mt-3 mx-auto text-center">
-    <a class="btn btn btn-primary" href="{% url 'accounts:mypage'%}">戻る</a>
-  </div>
+  {% comment %} <div class="mt-3 mx-auto text-center">
+    <a class="btn btn-secondary" href="{% url 'accounts:mypage'%}">戻る</a>
+  </div> {% endcomment %}
 
 {% endblock %}
