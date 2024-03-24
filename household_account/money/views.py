@@ -461,10 +461,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         context['income_bar'] = plot_bar_income
         return context
 
-# 月間推移グラフ：絞り込み機能付き
-# 支出のみ、収入のみのグラフを表示
-# 支出、収入それぞれにおいてカテゴリを単一で表示
-# 検索実行⇒クエリを絞り込みデータフレーム化⇒グラフ生成
+# 月間推移グラフ：収支、カテゴリ絞り込み機能 検索実行⇒クエリを絞り込みデータフレーム化⇒グラフ生成
 class TransitionView(LoginRequiredMixin, TemplateView):
     template_name = 'money/month_transition.html'
 

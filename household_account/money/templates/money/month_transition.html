@@ -2,23 +2,56 @@
 
 {% block content %}
 <form id="search-form" action="" method="GET">
-  <div class="mt-2">
-    月間推移：{{ search_form.graph_visible }}&emsp;
+  {% comment %} <div style="width:100%" class="mt-2 mr-auto text-end"> {% endcomment %}
+    <div class="row mt-2">
+      <div class="col-md-4">
+      </div>
+      <div class="col-md-8">
+      月間推移：{{ search_form.graph_visible }}&emsp;
 
-    {% comment %} 表示グラフが収入の時は表示しない {% endcomment %}
-    {% if search_form.cleaned_data.graph_visible != 'Income' %}
-      支出カテゴリ：{{ search_form.payment_category }}&emsp;
-    {% endif %}
+      {% comment %} 表示グラフが収入の時は表示しない {% endcomment %}
+      {% if search_form.cleaned_data.graph_visible != 'Income' %}
+        支出カテゴリ：{{ search_form.payment_category }}&emsp;
+      {% endif %}
 
-    {% comment %} 表示グラフが支出の時は表示しない {% endcomment %}
-    {% if search_form.cleaned_data.graph_visible != 'Payment' %}
-      収入カテゴリ：{{ search_form.income_category }}
-    {% endif %}
-  </div>
+      {% comment %} 表示グラフが支出の時は表示しない {% endcomment %}
+      {% if search_form.cleaned_data.graph_visible != 'Payment' %}
+        収入カテゴリ：{{ search_form.income_category }}
+      {% endif %}
+      </div>
+    </div>
+  {% comment %} </div> {% endcomment %}
 </form>
 
 {% autoescape off %}
-{{ transition_plot }}
+<div class="row mt-2">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">月間</h6>
+
+        <table class="table">
+          <tr>
+            <th>カテゴリ</th>
+            <th>金額</th>
+          </tr>
+          <tr>
+            <td>合計</td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        {{ transition_plot }}
+      </div>
+    </div>
+  </div>
+</div>
 {% endautoescape %}
 
 {% endblock %}

@@ -161,6 +161,7 @@ class GraphGenerator:
                 height=400  # 棒グラフの高さ調整
             )
 
-        fig.update_yaxes(visible=False, fixedrange=True)
+        fig.update_yaxes(showticklabels=True)  # 目盛りを表示
+        # fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
         return fig.to_html(include_plotlyjs=False)
