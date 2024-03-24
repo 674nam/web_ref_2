@@ -1,4 +1,4 @@
-from django.views.generic import *
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages # システムメッセージ
@@ -11,12 +11,11 @@ from django.contrib.auth import get_user_model # 設定されたユーザーモ�
 from django.db.models import Q
 
 from .models import Payment, PaymentCategory, Income, IncomeCategory \
-                    ,PaymentItem, IncomeItem\
-                    , PaymentOrigItem, IncomeOrigItem
+                    ,PaymentItem, IncomeItem, PaymentOrigItem, IncomeOrigItem
 from .forms import PaymentSearchForm, IncomeSearchForm \
                     , PaymentCreateForm, IncomeCreateForm \
                     , PaymentOrigItemForm, IncomeOrigItemForm \
-                    # , TransitionGraphSearchForm
+                    , TransitionGraphSearchForm
 from .plugin_plotly import GraphGenerator # グラフ
 
 # 支出一覧
@@ -138,33 +137,6 @@ class IncomeList(LoginRequiredMixin, ListView):
         context['page_title'] = '収入一覧'  # list.htmlで使用
         context['search_form'] = self.form
         return context
-
-# 支出登録
-# class PaymentCreate(LoginRequiredMixin, CreateView):
-#     template_name = 'money/create.html'
-#     model = Payment
-#     form_class = PaymentCreateForm
-
-#     def get_context_data(self, **kwargs): #オーバーライド
-#         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
-#         context['page_title'] = '支出登録' # contextに追加
-#         return context
-
-#     def get_success_url(self):
-#         return reverse_lazy('money:payment_list')
-
-#     def form_valid(self, form):
-#         # self.object = payment = form.save()
-#         login_user = self.request.user  # ログイン中のユーザーを取得
-#         self.object = payment = form.save(commit=False)
-#         payment.account_id = login_user
-#         payment.save()
-#         messages.info(self.request,
-#                         f'支出を登録しました'
-#                         f'日付:{payment.date}'
-#                         f'カテゴリ:{payment.category}'
-#                         f'金額:{payment.price}円')
-#         return redirect(self.get_success_url())
 
 class PaymentCreate(LoginRequiredMixin, CreateView):
     template_name = 'money/create.html'
@@ -380,7 +352,7 @@ class IncomeDelete(LoginRequiredMixin, DeleteView):
         return redirect(self.get_success_url())
 
 
-# 月間収支グラフ
+# 月別収支グラフ
 class MonthGraph(LoginRequiredMixin, TemplateView):
     template_name = 'money/month_graph.html'
 
@@ -424,7 +396,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
         gen_payment = GraphGenerator()
 
-        # 月間支出円グラフ カテゴリー毎に金額をpivot集計
+        # 月別支出円グラフ カテゴリー毎に金額をpivot集計
         df_payment_pie = pd.pivot_table(df_payment, index='category', values='price', aggfunc=np.sum)
         # カテゴリー情報をdf_payment_pie.index.valuesで取り出してリスト化
         pie_payment_labels = list(df_payment_pie.index.values)
@@ -450,7 +422,6 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         plot_bar_payment = gen_payment.month_daily_bar_payment(x_list=dates_payment, y_list=heights_payment)
         context['payment_bar'] = plot_bar_payment
 
-
         # IncomeモデルのQuerySetを取り出す
         income_queryset = Income.objects.filter(account_id=login_user)
         income_queryset = income_queryset.filter(date__year=year, date__month=month)
@@ -463,7 +434,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
         gen_income = GraphGenerator()
 
-        # 月間収入円グラフ カテゴリー毎に金額をpivot集計
+        # 月別収入円グラフ カテゴリー毎に金額をpivot集計
         df_income_pie = pd.pivot_table(df_income, index='category', values='price', aggfunc=np.sum)
         # カテゴリー情報をdf_income_pie.index.valuesで取り出してリスト化
         pie_income_labels = list(df_income_pie.index.values)
@@ -482,171 +453,76 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
 
         # 日別収入棒グラフの素材
         df_income_bar = pd.pivot_table(df_income, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
-                # 日付のフォーマットを変更する
+        # 日付のフォーマットを変更する
         dates_income = [date.strftime('%m/%d') for date in df_income_bar.index]
         # dates_income = list(df_income_bar.index.values) # 日付情報をリスト化
         heights_income = [val[0] for val in df_income_bar.values] # 金額情報をディクショナリ化
         plot_bar_income = gen_income.month_daily_bar_income(x_list=dates_income, y_list=heights_income)
         context['income_bar'] = plot_bar_income
-
         return context
 
+# 月間推移グラフ：絞り込み機能付き
+# 支出のみ、収入のみのグラフを表示
+# 支出、収入それぞれにおいてカテゴリを単一で表示
+# 検索実行⇒クエリを絞り込みデータフレーム化⇒グラフ生成
+class TransitionView(LoginRequiredMixin, TemplateView):
+    template_name = 'money/month_transition.html'
 
-# # 月間支出
-# class MonthGraph(LoginRequiredMixin, TemplateView):
-#     template_name = 'money/month_graph.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        login_user = self.request.user  # ログイン中のユーザーを取得
+        payment_queryset = Payment.objects.filter(account_id=login_user)
+        income_queryset = Income.objects.filter(account_id=login_user)
+        self.form = form = TransitionGraphSearchForm(self.request.GET or None)
+        context['search_form'] = self.form
 
-#     def get_context_data(self, **kwargs): # オーバーライド
-#         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        graph_visible = None
+        # 表示の切り替えでplotlyに渡すデータ
+        months_payment = None
+        payments = None
+        months_income = None
+        incomes = None
 
-#         # これから表示する年月
-#         year = int(self.kwargs.get('year'))
-#         month = int(self.kwargs.get('month'))
-#         context['year_month'] = f'{year}年{month}月' # contextに追加
+        if form.is_valid(): # バリデーションチェック
+            # 支出カテゴリーで絞り込む
+            payment_category = form.cleaned_data.get('payment_category')
+            if payment_category:
+                payment_queryset = payment_queryset.filter(category=payment_category)
+            # 収入カテゴリーで絞り込む
+            income_category = form.cleaned_data.get('income_category')
+            if income_category:
+                income_queryset = income_queryset.filter(category=income_category)
+            # 表示グラフ
+            graph_visible = form.cleaned_data.get('graph_visible')
 
-#         # 前月と次月をcontextに追加
-#         if month == 1:
-#             prev_year = year - 1
-#             prev_month = 12
-#         else:
-#             prev_year = year
-#             prev_month = month - 1
+        if not graph_visible or graph_visible == 'Payment': # 表示指定がない、もしくは支出グラフの表示を選択
+            df_payment = read_frame(payment_queryset,
+                                    fieldnames=['date', 'price'])
+            # 日付をdatetime化、Y/m表記へ変換
+            df_payment['date'] = pd.to_datetime(df_payment['date'])
+            df_payment['month'] = df_payment['date'].dt.strftime('%Y/%m')
+            # 月別pivot集計
+            df_payment = pd.pivot_table(df_payment, index='month', values='price', aggfunc=np.sum)
+            months_payment = list(df_payment.index.values) # x軸
+            payments = [y[0] for y in df_payment.values] # y軸
 
-#         if month == 12:
-#             next_year = year + 1
-#             next_month = 1
-#         else:
-#             next_year = year
-#             next_month = month + 1
-#         context['prev_year'] = prev_year   # contextに追加
-#         context['prev_month'] = prev_month
-#         context['next_year'] = next_year
-#         context['next_month'] = next_month
+        if not graph_visible or graph_visible == 'Income': # 表示指定がない、もしくは収入グラフの表示を選択
+            df_income = read_frame(income_queryset,
+                                    fieldnames=['date', 'price'])
+            df_income['date'] = pd.to_datetime(df_income['date'])
+            df_income['month'] = df_income['date'].dt.strftime('%Y/%m')
+            df_income = pd.pivot_table(df_income, index='month', values='price', aggfunc=np.sum)
+            months_income = list(df_income.index.values)
+            incomes = [y[0] for y in df_income.values]
 
-#         # PaymentモデルのQuerySetを取り出す
-#         queryset = Payment.objects.filter(date__year=year)
-#         queryset = queryset.filter(date__month=month)
-#         # 後の工程のエラー対策
-#         if not queryset:
-#             return context # QuerySetが何もない時はcontextを返す
-#         # 取り出したQuerySetをpandasデータフレーム(df)化
-#         df = read_frame(queryset,
-#                         fieldnames=['date', 'price', 'category'])
-#         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
-#         gen = GraphGenerator()
-#         # pieチャートの素材作成
-#         # カテゴリー毎に金額をpivot集計
-#         df_payment_pie = pd.pivot_table(df, index='category', values='price', aggfunc=np.sum)
-#         # カテゴリー情報をdf_payment_pie.index.valuesで取り出してリスト化
-#         pie_payment_labels = list(df_payment_pie.index.values)
-#         # 金額情報をdf_payment_pie.valuesで取り出してディクショナリ化
-#         pie_payment_values = [val[0] for val in df_payment_pie.values]
-#         plot_payment_pie = gen.month_pie(labels=pie_payment_labels, values=pie_payment_values) # genインスタンスmonth_pieメソッド
-#         context['payment_pie'] = plot_payment_pie # contextに追加
-
-#         # テーブルでのカテゴリと集計金額の表示
-#         # ディクショナリ{カテゴリ:集計金額, カテゴリ:集計金額…}をcontextに追加
-#         context['payment_table_set'] = df_payment_pie.to_dict()['price']
-#         # totalの数字を計算してcontextに追加
-#         context['total_payment'] = df['price'].sum()
-
-#         # 日別棒グラフの素材
-#         df_payment_bar = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum) # 日付ごとに金額をピボット集計
-#         dates_payment = list(df_payment_bar.index.values) # 日付情報をリスト化
-#         heights_payment = [val[0] for val in df_payment_bar.values] # 金額情報をディクショナリ化
-#         plot_bar_payment = gen.month_daily_bar(x_list=dates_payment, y_list=heights_payment)
-#         context['payment_bar'] = plot_bar_payment
-#         return context
-
-# # 月間支出・収入グラフ
-# class MonthGraph(LoginRequiredMixin, TemplateView):
-#     template_name = 'money/month_graph.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-
-#         year = int(self.kwargs.get('year'))
-#         month = int(self.kwargs.get('month'))
-#         context['year_month'] = f'{year}年{month}月'
-
-#         if month == 1:
-#             prev_year = year - 1
-#             prev_month = 12
-#         else:
-#             prev_year = year
-#             prev_month = month - 1
-
-#         if month == 12:
-#             next_year = year + 1
-#             next_month = 1
-#         else:
-#             next_year = year
-#             next_month = month + 1
-#         context['prev_year'] = prev_year
-#         context['prev_month'] = prev_month
-#         context['next_year'] = next_year
-#         context['next_month'] = next_month
-
-#         login_user = self.request.user  # ログイン中のユーザーを取得
-
-#         # PaymentモデルのうちログインユーザーのQuerySetを取り出す
-#         payment_queryset = Payment.objects.filter(account_id=login_user)
-#         payment_queryset = payment_queryset.filter(date__year=year, date__month=month)
-#         # 後の工程のエラー対策
-#         if not payment_queryset:
-#             return context
-#         # 取り出したQuerySetをpandasデータフレーム(df)化
-#         payment_df = read_frame(payment_queryset, fieldnames=['date', 'price', 'category'])
-
-#         # IncomeモデルのうちログインユーザーのQuerySetを取り出す
-#         income_queryset = Income.objects.filter(account_id=login_user)
-#         income_queryset = income_queryset.filter(date__year=year, date__month=month)
-#         if not income_queryset:
-#             return context
-#         income_df = read_frame(income_queryset, fieldnames=['date', 'price', 'category'])
-
-#         # plugin_plotly.pyのGraphGeneratorクラスでインスタンス作成
-#         gen = GraphGenerator()
-
-#         # Paymentデータに基づくグラフ
-#         payment_pie_payment_labels, payment_pie_payment_values = self.prepare_data(payment_df)
-#         payment_pie = gen.month_pie(labels=payment_pie_payment_labels, values=payment_pie_payment_values)
-#         context['payment_pie'] = payment_pie
-#         # カテゴリー毎に金額をpivot集計
-#         payment_table_set = pd.pivot_table(payment_df, index='category', values='price', aggfunc=np.sum)
-#         # テーブルでのカテゴリと集計金額の表示
-#         # ディクショナリ{カテゴリ:集計金額, カテゴリ:集計金額…}をcontextに追加
-#         context['payment_table_set'] = payment_table_set.to_dict()['price']
-#         # totalの数字を計算してcontextに追加
-#         context['total_payment'] = payment_df['price'].sum()
-#         # 日別棒グラフ
-#         payment_bar_dates_payment, payment_bar_heights_payment = self.prepare_data(payment_df, by='date')
-#         payment_bar = gen.month_daily_bar_payment(x_list=payment_bar_dates_payment, y_list=payment_bar_heights_payment)
-#         context['payment_bar'] = payment_bar
-
-#         # Incomeデータに基づくグラフ
-#         income_pie_payment_labels, income_pie_payment_values = self.prepare_data(income_df)
-#         income_pie = gen.month_pie(labels=income_pie_payment_labels, values=income_pie_payment_values)
-#         context['income_pie'] = income_pie
-
-#         income_table_set = pd.pivot_table(income_df, index='category', values='price', aggfunc=np.sum)
-#         context['income_table_set'] = income_table_set.to_dict()['price']
-#         context['total_income'] = income_df['price'].sum()
-
-#         income_bar_dates_payment, income_bar_heights_payment = self.prepare_data(income_df, by='date')
-#         income_bar = gen.month_daily_bar_income(x_list=income_bar_dates_payment, y_list=income_bar_heights_payment)
-#         context['income_bar'] = income_bar
-
-#         return context
-
-#     def prepare_data(self, df, by='category'):
-#         if by == 'category':
-#             pivot_df = pd.pivot_table(df, index=by, values='price', aggfunc=np.sum)
-#             labels = list(pivot_df.index.values)
-#             values = [val[0] for val in pivot_df.values]
-#             return labels, values
-#         elif by == 'date':
-#             pivot_df = pd.pivot_table(df, index='date', values='price', aggfunc=np.sum)
-#             dates_payment = list(pivot_df.index.values)
-#             heights_payment = [val[0] for val in pivot_df.values]
-#             return dates_payment, heights_payment
+        gen = GraphGenerator() # plugin_plotly.pyのクラスでインスタンスを生成
+        # if条件分岐（表示グラフ選択）により書換えられた値 または None が入った
+        # months_payment、payments、months_income、incomes
+        # を引数として渡し、グラフを作成する（Noneが渡されたグラフは作成されない）
+        context['transition_plot'] = gen.transition_plot(
+                                        x_list_payment=months_payment,
+                                        y_list_payment=payments,
+                                        x_list_income=months_income,
+                                        y_list_income=incomes
+                                        )
+        return context
