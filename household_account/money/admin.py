@@ -15,8 +15,7 @@ class PaymentResource(resources.ModelResource):
 # 管理者画面：摘要の検索、カテゴリ絞り込み
 class PaymentAdmin(ImportExportModelAdmin):
     search_fields = ('description',)
-    list_display = ['date', 'price', 'description']
-    # list_display = ['date', 'category', 'price', 'description']
+    list_display = ['date', 'account_id', 'category', 'price', 'description',]
     # list_filter = ('category',)
     ordering = ('-date',)
 
@@ -29,6 +28,7 @@ class PaymentCategoryResource(resources.ModelResource):
 
 # 管理者画面
 class PaymentCategoryAdmin(ImportExportModelAdmin):
+    # list_display = ['id', 'name',]
     resource_class = PaymentCategoryResource
 
 # PaymentItemモデルへの統合
@@ -38,6 +38,7 @@ class PaymentItemResource(resources.ModelResource):
 
 # 管理者画面
 class PaymentItemAdmin(ImportExportModelAdmin):
+    ordering = ('category',)
     resource_class = PaymentItemResource
 
 # PaymentOrigItemモデルへの統合
@@ -47,6 +48,8 @@ class PaymentOrigItemResource(resources.ModelResource):
 
 # 管理者画面
 class PaymentOrigItemAdmin(ImportExportModelAdmin):
+    list_display = ['category','name', 'account_id',]
+    list_filter = ('account_id',)
     resource_class = PaymentOrigItemResource
 
 # Incomeモデルへの統合
@@ -57,8 +60,7 @@ class IncomeResource(resources.ModelResource):
 # 管理者画面：摘要の検索、カテゴリ絞り込み
 class IncomeAdmin(ImportExportModelAdmin):
     search_fields = ('description',)
-    list_display = ['date', 'price', 'description']
-    # list_display = ['date', 'category', 'price', 'description']
+    list_display = ['date', 'account_id', 'category', 'price', 'description',]
     # list_filter = ('category',)
     ordering = ('-date',)
 
@@ -71,6 +73,7 @@ class IncomeCategoryResource(resources.ModelResource):
 
 # 管理者画面
 class IncomeCategoryAdmin(ImportExportModelAdmin):
+    # list_display = ['id', 'name',]
     resource_class = IncomeCategoryResource
 
 # IncomeItemモデルへの統合
@@ -80,6 +83,7 @@ class IncomeItemResource(resources.ModelResource):
 
 # 管理者画面
 class IncomeItemAdmin(ImportExportModelAdmin):
+    ordering = ('category',)
     resource_class = IncomeItemResource
 
 # IncomeOrigItemモデルへの統合
@@ -89,6 +93,8 @@ class IncomeOrigItemResource(resources.ModelResource):
 
 # 管理者画面
 class IncomeOrigItemAdmin(ImportExportModelAdmin):
+    list_display = ['category','name', 'account_id',]
+    list_filter = ('account_id',)
     resource_class = IncomeOrigItemResource
 
 # Budgetモデルへの統合

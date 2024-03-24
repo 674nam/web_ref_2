@@ -45,7 +45,7 @@ class IncomeItem(models.Model):
 
 # ユーザー設定支出項目
 class PaymentOrigItem(models.Model):
-    account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    account_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField('ユーザー設定支出項目', max_length=32)
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
@@ -56,7 +56,7 @@ class PaymentOrigItem(models.Model):
 
 # ユーザー設定収入項目
 class IncomeOrigItem(models.Model):
-    account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    account_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField('ユーザー設定収入項目', max_length=32)
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
 
@@ -69,7 +69,7 @@ class IncomeOrigItem(models.Model):
 # 支出
 class Payment(models.Model):
     date = models.DateField('日付')
-    account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    account_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     item = models.ForeignKey(PaymentItem, verbose_name='支出項目', on_delete=models.SET_NULL, null=True, blank=True)
     user_item = models.ForeignKey(PaymentOrigItem, verbose_name='ユーザー設定支出項目', on_delete=models.SET_NULL, null=True, blank=True)
@@ -85,7 +85,7 @@ class Payment(models.Model):
 # 収入
 class Income(models.Model):
     date = models.DateField('日付')
-    account_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    account_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     item = models.ForeignKey(IncomeItem, verbose_name='収入項目', on_delete=models.SET_NULL, null=True, blank=True)
     user_item = models.ForeignKey(IncomeOrigItem, verbose_name='ユーザー設定収入項目', on_delete=models.SET_NULL, null=True, blank=True)
