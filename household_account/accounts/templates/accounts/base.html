@@ -59,14 +59,17 @@
       {% block title %}{% endblock %}
   </div>
 
+  <div style="width:90%" class="mx-auto text-center">
     {% if messages %}
       <div class="alert alert-primary alert-dismissible fade show" role="alert">
         {% for message in messages %}
-          <p>{{ message }}</p>
+          {% comment %} 改行 \n を<br>に変換して表示 {% endcomment %}
+          <p>{{ message|linebreaksbr }}</p>
         {% endfor %}
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     {% endif %}
+  </div>
 
   <div class="container mx-auto text-center">
         {% block content %}{% endblock %}

@@ -159,10 +159,10 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
         payment.account_id = login_user
         payment.save()
         messages.info(self.request,
-                        f'支出を登録しました'
-                        f'日付:{payment.date}'
-                        f'カテゴリ:{payment.category}'
-                        f'金額:{payment.price}円')
+                        f'支出を登録しました。\n'
+                        f'日付：{payment.date}\n'
+                        f'カテゴリ：{payment.category}\n'
+                        f'金額：{payment.price}円')
         return redirect(self.get_success_url())
 
 # 収入登録
@@ -191,10 +191,10 @@ class IncomeCreate(LoginRequiredMixin, CreateView):
         income.account_id = login_user
         income.save()
         messages.info(self.request,
-                        f'収入を登録しました'
-                        f'日付:{income.date}'
-                        f'カテゴリ:{income.category}'
-                        f'金額:{income.price}円')
+                        f'収入を登録しました。\n'
+                        f'日付：{income.date}\n'
+                        f'カテゴリ：{income.category}\n'
+                        f'金額：{income.price}円')
         return redirect(self.get_success_url())
 
 # ユーザー設定支出項目登録
@@ -273,10 +273,10 @@ class PaymentUpdate(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = payment = form.save()
         messages.info(self.request,
-                        f'支出を更新しました'
-                        f'日付:{payment.date}'
-                        f'カテゴリ:{payment.category}'
-                        f'金額:{payment.price}円')
+                        f'支出を更新しました。\n'
+                        f'日付：{payment.date}\n'
+                        f'カテゴリ：{payment.category}\n'
+                        f'金額：{payment.price}円')
         return redirect(self.get_success_url())
 
 # 収入更新
@@ -296,13 +296,12 @@ class IncomeUpdate(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = income = form.save()
         messages.info(self.request,
-                        f'収入を更新しました'
-                        f'日付:{income.date}'
-                        f'カテゴリ:{income.category}'
-                        f'金額:{income.price}円')
+                        f'収入を更新しました。\n'
+                        f'日付：{income.date}\n'
+                        f'カテゴリ：{income.category}\n'
+                        f'金額：{income.price}円')
         return redirect(self.get_success_url())
 
-# 支出削除
 class PaymentDelete(LoginRequiredMixin, DeleteView):
     template_name = 'money/delete.html'
     model = Payment
@@ -312,18 +311,15 @@ class PaymentDelete(LoginRequiredMixin, DeleteView):
         context['page_title'] = '支出削除' # contextに追加
         return context
 
-    def get_success_url(self):
-        return reverse_lazy('money:payment_list')
-
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = payment = self.get_object()
         payment.delete()
-        messages.info(self.request,
-                        f'支出を削除しました'
-                        f'日付:{payment.date}'
-                        f'カテゴリ:{payment.category}'
-                        f'金額:{payment.price}円')
-        return redirect(self.get_success_url())
+        messages.info(request,
+                        f'支出を削除しました。\n'
+                        f'日付：{payment.date}\n'
+                        f'カテゴリ：{payment.category}\n'
+                        f'金額：{payment.price}円')
+        return redirect(reverse_lazy('money:payment_list'))
 
 # 収入削除
 class IncomeDelete(LoginRequiredMixin, DeleteView):
@@ -338,14 +334,14 @@ class IncomeDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('money:income_list')
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = income = self.get_object()
         income.delete()
         messages.info(self.request,
-                        f'収入を削除しました'
-                        f'日付:{income.date}'
-                        f'カテゴリ:{income.category}'
-                        f'金額:{income.price}円')
+                        f'収入を削除しました。\n'
+                        f'日付：{income.date}\n'
+                        f'カテゴリ：{income.category}\n'
+                        f'金額：{income.price}円')
         return redirect(self.get_success_url())
 
 
