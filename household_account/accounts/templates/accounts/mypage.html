@@ -1,0 +1,28 @@
+{% extends 'money/base.html' %}
+{% comment %} moneyアプリのhtmlを継承 {% endcomment %}
+{% block title %}
+  <div class="h2">{{ page_title }}</div>
+{% endblock %}
+
+{% block content %}
+<table class="table mt-3">
+  <tr>
+    <th>account_id</th>
+    <th>email</th>
+    <th>家名</th>
+    <th>名前</th>
+  </tr>
+
+  {% for list in object_list %}
+  <tr>
+    <td>{{ list.account_id }}</td>
+    <td>{{ list.email }}</td>
+    <td>{{ list.family_name.family_name }}</td>
+    <td>{{ list.first_name }}</td>
+    <td>
+      <a class="btn btn-danger" href="{% url 'accounts:user_delete' list.pk %}">削除</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

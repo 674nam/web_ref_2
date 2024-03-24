@@ -80,7 +80,8 @@
                 logined : "{{ user.account_id }}"
               </button>
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                <li><a class="dropdown-item" href="/logout?next=">logout</a></li>
+                <li><a class="dropdown-item" href="{% url 'accounts:mypage' %}">マイページ</a></li>
+                <li><a class="dropdown-item" href="/logout?next=">ログアウト</a></li>
               </ul>
             </li>
           </ul>

@@ -302,6 +302,7 @@ class IncomeUpdate(LoginRequiredMixin, UpdateView):
                         f'金額：{income.price}円')
         return redirect(self.get_success_url())
 
+# 支出削除
 class PaymentDelete(LoginRequiredMixin, DeleteView):
     template_name = 'money/delete.html'
     model = Payment
