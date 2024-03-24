@@ -312,6 +312,7 @@ class PaymentDelete(LoginRequiredMixin, DeleteView):
         context['page_title'] = '支出削除' # contextに追加
         return context
 
+    # def deleteで作成するとメッセージが表示されないためdef postに変更
     def post(self, request, *args, **kwargs):
         self.object = payment = self.get_object()
         payment.delete()
@@ -335,6 +336,7 @@ class IncomeDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('money:income_list')
 
+    # def deleteで作成するとメッセージが表示されないためdef postに変更
     def post(self, request, *args, **kwargs):
         self.object = income = self.get_object()
         income.delete()
