@@ -30,7 +30,7 @@ class GraphGenerator:
                 autoexpand=True,
                 l=20, r=0, b=0, t=30,
             ),
-            height=200, # 円グラフの高さを調整
+            height=250, # 円グラフの高さを調整
         )
         return fig.to_html(include_plotlyjs=False)
 
@@ -57,7 +57,7 @@ class GraphGenerator:
                 linewidth=1,
                 rangemode='tozero'
             ),
-            height=200  # 棒グラフの高さ調整
+            height=250  # 棒グラフの高さ調整
         )
         fig.update_yaxes(automargin=True)
         fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
@@ -86,7 +86,7 @@ class GraphGenerator:
                 linewidth=1,
                 rangemode='tozero'
             ),
-            height=200  # 棒グラフの高さ調整
+            height=250  # 棒グラフの高さ調整
         )
         fig.update_yaxes(automargin=True)
         fig.update_xaxes(tickangle=45)  # x軸のラベルを45度傾ける
