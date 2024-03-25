@@ -353,7 +353,7 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
-
+        context['page_title'] = '月別収支'
         # これから表示する年月
         year = int(self.kwargs.get('year'))
         month = int(self.kwargs.get('month'))
@@ -397,8 +397,6 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         pie_payment_labels = list(df_payment_pie.index.values)
         # 金額情報をdf_payment_pie.valuesで取り出してディクショナリ化
         pie_payment_values = [val[0] for val in df_payment_pie.values]
-        # ラベルの並び順を逆にする
-        pie_payment_labels.reverse()
         plot_payment_pie = gen_payment.month_pie(labels=pie_payment_labels, values=pie_payment_values) # genインスタンスmonth_pieメソッド
         context['payment_pie'] = plot_payment_pie # contextに追加
 
@@ -433,8 +431,8 @@ class MonthGraph(LoginRequiredMixin, TemplateView):
         pie_income_labels = list(df_income_pie.index.values)
         # 金額情報をdf_income_pie.valuesで取り出してディクショナリ化
         pie_income_values = [val[0] for val in df_income_pie.values]
-        # ラベルの並び順を逆にする
-        pie_income_labels.reverse()
+        # # ラベルの並び順を逆にする
+        # pie_income_labels.reverse()
         plot_income_pie = gen_income.month_pie(labels=pie_income_labels, values=pie_income_values) # genインスタンスmonth_pieメソッド
         context['income_pie'] = plot_income_pie # contextに追加
 
@@ -458,6 +456,7 @@ class TransitionView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = '月間推移'
         login_user = self.request.user  # ログイン中のユーザーを取得
         payment_queryset = Payment.objects.filter(account_id=login_user)
         if not payment_queryset:

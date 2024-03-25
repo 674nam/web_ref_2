@@ -1,7 +1,7 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-  <div class="h2">{{ page_title }}</div>
+  <div class="h3">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
@@ -19,17 +19,22 @@
     <form method="post">
       {% csrf_token %}
         <div class="mx-auto text-center">
-          <button type='submit' class="btn btn-danger" name="button">削除</button>
+          <button type='submit' class="btn btn-danger" name="button">削除</button>&emsp;
+        {% if '支出' in page_title %}
+          <a class="btn btn-secondary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+        {% else %}
+          <a class="btn btn-secondary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+        {% endif %}
         </div>
     </form>
   </div>
 
-  <div class="mt-3 mx-auto text-center">
+  {% comment %} <div class="mt-3 mx-auto text-center">
   {% if '支出' in page_title %}
     <a class="btn btn-secondary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
   {% else %}
     <a class="btn btn-secondary" href="{% url 'money:income_list'%}">一覧に戻る</a>
   {% endif %}
-  </div>
+  </div> {% endcomment %}
 
 {% endblock %}

@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView \
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin # ログインユーザーのみ閲覧可能
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 
 from .forms import SignUpForm, LoginForm, FamilyregisterForm
 from .models import User
@@ -57,19 +57,22 @@ class UserUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/user_update.html'
     model = User
     form_class = SignUpForm
+    success_url = reverse_lazy("accounts:mypage") # ユーザー更新後のリダイレクト先
 
     def get_context_data(self, **kwargs): # オーバーライド
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
         context['page_title'] = 'ユーザー情報更新' # contextに追加
         return context
 
-    def get_success_url(self):
-        return reverse_lazy('accounts:mypage')
-
-    def form_valid(self, form):
+    def form_valid(self, form): # ユーザー更新後にそのままログイン状態にする
         self.object = form.save()
-        messages.info(self.request,'ユーザー情報を更新しました。')
-        return redirect(self.get_success_url())
+        response = super().form_valid(form)
+        account_id = form.cleaned_data.get("account_id")
+        password = form.cleaned_data.get("password1")
+        user = authenticate(account_id=account_id, password=password)
+        login(self.request, user)
+        messages.success(self.request, 'ユーザー情報を更新しました。')
+        return response
 
 # ユーザー削除
 class UserDelete(LoginRequiredMixin, DeleteView):

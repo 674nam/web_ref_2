@@ -1,7 +1,7 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-  <div class="h2">{{ page_title }}</div>
+  <div class="h3">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
@@ -26,19 +26,29 @@
           {{ field }}
         </div>
       {% endfor %}
-      <div class="mx-auto text-center">
+      {% comment %} <div class="mx-auto text-center">
         <button type="submit" class="btn btn-primary" name="button">登録</button>
+      </div> {% endcomment %}
+
+      <div class="mt-3 mx-auto text-center">
+        <button type="submit" class="btn btn-primary">登録</button>&emsp;
+      {% if '支出' in page_title %}
+        <a class="btn btn-secondary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
+      {% else %}
+        <a class="btn btn-secondary" href="{% url 'money:income_list'%}">一覧に戻る</a>
+      {% endif %}
       </div>
+
     </form>
   </div>
 
-  <div class="mt-3 mx-auto text-center">
+  {% comment %} <div class="mt-3 mx-auto text-center">
     {% if '支出' in page_title %}
       <a class="btn btn-secondary" href="{% url 'money:payment_list'%}">一覧に戻る</a>
     {% else %}
       <a class="btn btn-secondary" href="{% url 'money:income_list'%}">一覧に戻る</a>
     {% endif %}
-  </div>
+  </div> {% endcomment %}
 
   {% comment %} datepiker 土日カラー{% endcomment %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">

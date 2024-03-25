@@ -1,79 +1,91 @@
 from django.test import TestCase
-from django.utils import timezone
-from .models import PaymentCategory, IncomeCategory \
-                    , PaymentItem, IncomeItem \
-                    , PaymentOrigItem, IncomeOrigItem \
-                    , Payment, Income
 from django.contrib.auth import get_user_model
+from .models import PaymentCategory, IncomeCategory,\
+                    PaymentItem, IncomeItem,\
+                    PaymentOrigItem, IncomeOrigItem,\
+                    Payment, Income
 
-class MoneyTestCase(TestCase):
+class ModelTests(TestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        User = get_user_model()
-        cls.test_user = User.objects.create(account_id="test_account",
-                                            email="test@example.com",
-                                            first_name="Test",
-                                            is_superuser=False,
-                                            is_staff=False)
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create(
+                        account_id='test_account_id',
+                        email='test@example.com',
+                        first_name='Test',
+                        is_superuser=False,
+                        is_staff=False
+                        )
+        cls.payment_category = PaymentCategory.objects.create(
+                        name='Test Payment Category'
+                        )
+        cls.income_category = IncomeCategory.objects.create(
+                        name='Test Income Category'
+                        )
+        cls.payment_item = PaymentItem.objects.create(
+                        name='Test Payment Item',
+                        category=cls.payment_category
+                        )
+        cls.income_item = IncomeItem.objects.create(
+                        name='Test Income Item',
+                        category=cls.income_category
+                        )
+        cls.payment_orig_item = PaymentOrigItem.objects.create(
+                        account_id=cls.user,
+                        name='Test Payment Orig Item',
+                        category=cls.payment_category
+                        )
+        cls.income_orig_item = IncomeOrigItem.objects.create(
+                        account_id=cls.user,
+                        name='Test Income Orig Item',
+                        category=cls.income_category
+                        )
+        cls.payment = Payment.objects.create(
+                        date='2024-03-25',
+                        account_id=cls.user,
+                        category=cls.payment_category,
+                        item=cls.payment_item,
+                        user_item=cls.payment_orig_item,
+                        price=100,
+                        description='Test Payment'
+                        )
+        cls.income = Income.objects.create(
+                        date='2024-03-25',
+                        account_id=cls.user,
+                        category=cls.income_category,
+                        item=cls.income_item,
+                        user_item=cls.income_orig_item,
+                        price=100,
+                        description='Test Income'
+                        )
 
-    @classmethod
-    def create_payment_category(self):
-        return PaymentCategory.objects.create(name="Test Payment Category")
+    def test_payment_category_str(self):
+        category = PaymentCategory.objects.get(id=1)
+        self.assertEqual(str(category), 'Test Payment Category')
 
-    @classmethod
-    def create_income_category(self):
-        return IncomeCategory.objects.create(name="Test Income Category")
+    def test_income_category_str(self):
+        category = IncomeCategory.objects.get(id=1)
+        self.assertEqual(str(category), 'Test Income Category')
 
-    @classmethod
-    def create_payment_item(self, category):
-        return PaymentItem.objects.create(name="Test Payment Item", category=category)
+    def test_payment_item_str(self):
+        item = PaymentItem.objects.get(id=1)
+        self.assertEqual(str(item), f'{self.payment_category} ; Test Payment Item')
 
-    @classmethod
-    def create_income_item(self, category):
-        return IncomeItem.objects.create(name="Test Income Item", category=category)
+    def test_income_item_str(self):
+        item = IncomeItem.objects.get(id=1)
+        self.assertEqual(str(item), f'{self.income_category} ; Test Income Item')
 
-    @classmethod
-    def create_payment_orig_item(self, category):
-        return PaymentOrigItem.objects.create(name="Test User Payment Item", category=category, account_id=self.test_user)
+    def test_payment_orig_item_str(self):
+        item = PaymentOrigItem.objects.get(id=1)
+        self.assertEqual(str(item), f'{self.payment_category} ; Test Payment Orig Item')
 
-    @classmethod
-    def create_income_orig_item(self, category):
-        return IncomeOrigItem.objects.create(name="Test User Income Item", category=category, account_id=self.test_user)
+    def test_income_orig_item_str(self):
+        item = IncomeOrigItem.objects.get(id=1)
+        self.assertEqual(str(item), f'{self.income_category} ; Test Income Orig Item')
 
-    @classmethod
-    def create_payment(self, category, item):
-        return Payment.objects.create(date=timezone.now(), account_id=self.test_user, category=category, item=item, price=100)
+    def test_payment_str(self):
+        payment = Payment.objects.get(id=1)
+        self.assertEqual(str(payment), '2024-03-25,100,Test Payment Category')
 
-    @classmethod
-    def create_income(self, category, item):
-        return Income.objects.create(date=timezone.now(), account_id=self.test_user, category=category, item=item, price=100)
-
-    def test_check(self):
-        payment_category = self.create_payment_category()
-        self.assertEqual(str(payment_category), "Test Payment Category")
-
-        income_category = self.create_income_category()
-        self.assertEqual(str(income_category), "Test Income Category")
-
-        payment_item = self.create_payment_item(payment_category)
-        self.assertEqual(str(payment_item), f'{payment_category} ; Test Payment Item')
-
-        income_item = self.create_income_item(income_category)
-        self.assertEqual(str(income_item), f'{income_category} ; Test Income Item')
-
-        payment_orig_item = self.create_payment_orig_item(payment_category)
-        self.assertEqual(str(payment_orig_item), f'{payment_category} ; Test User Payment Item')
-
-        income_orig_item = self.create_income_orig_item(income_category)
-        self.assertEqual(str(income_orig_item), f'{income_category} ; Test User Income Item')
-
-        payment = self.create_payment(payment_category, payment_item)
-        self.assertEqual(str(payment), f'{str(payment.date)},{str(payment.price)},{payment.category}')
-
-        income = self.create_income(income_category, income_item)
-        self.assertEqual(str(income), f'{str(income.date)},{str(income.price)},{income.category}')
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
+    def test_income_str(self):
+        income = Income.objects.get(id=1)
+        self.assertEqual(str(income), '2024-03-25,100,Test Income Category')

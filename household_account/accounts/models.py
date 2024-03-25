@@ -45,7 +45,7 @@ class Family(models.Model):
             blank=False
         )
     def __str__(self):
-        return f'{str(self.id)} , {self.family_name}'
+        return self.family_name
 
     class Meta:
         ordering = ('id',)
