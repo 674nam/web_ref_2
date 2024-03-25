@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # 支出カテゴリ
 class PaymentCategory(models.Model):
@@ -73,7 +74,7 @@ class Payment(models.Model):
     category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     item = models.ForeignKey(PaymentItem, verbose_name='支出項目', on_delete=models.SET_NULL, null=True, blank=True)
     user_item = models.ForeignKey(PaymentOrigItem, verbose_name='ユーザー設定支出項目', on_delete=models.SET_NULL, null=True, blank=True)
-    price = models.IntegerField('金額')
+    price = models.IntegerField('金額', validators=[MinValueValidator(0)])
     description = models.TextField('備考', null=True, blank=True)
 
     def __str__(self):
@@ -89,7 +90,7 @@ class Income(models.Model):
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name='カテゴリ')
     item = models.ForeignKey(IncomeItem, verbose_name='収入項目', on_delete=models.SET_NULL, null=True, blank=True)
     user_item = models.ForeignKey(IncomeOrigItem, verbose_name='ユーザー設定収入項目', on_delete=models.SET_NULL, null=True, blank=True)
-    price = models.IntegerField('金額')
+    price = models.IntegerField('金額', validators=[MinValueValidator(0)])
     description = models.TextField('備考', null=True, blank=True)
 
     def __str__(self):
@@ -100,9 +101,9 @@ class Income(models.Model):
 
 # 予算テーブル
 class Budget(models.Model):
-    year = models.IntegerField('年')
-    month = models.IntegerField('月')
-    budget_limit = models.IntegerField('月予算')
+    year = models.IntegerField('年',validators=[MinValueValidator(0)])
+    month = models.IntegerField('月',validators=[MinValueValidator(0),MaxValueValidator(12)])
+    budget_limit = models.IntegerField('月予算',validators=[MinValueValidator(0)])
 
     class Meta:
         ordering = ('-month',)
