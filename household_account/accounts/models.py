@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("名前"),
         max_length=150,
         null=True,
-        blank=False
+        blank=True
     )
 
     is_superuser = models.BooleanField(

@@ -7,12 +7,12 @@ from .models import User, Family
 class SignUpForm(UserCreationForm):
     class Meta:
         model = User # 連携するカスタムユーザーモデル
-        fields = ( # フォームで使用するフィールド
+        fields = [ # フォームで使用するフィールド
             "family_name",
             "account_id",
             "email",
             "first_name",
-        )
+        ]
 
 # 家名登録フォーム
 class FamilyregisterForm(ModelForm):

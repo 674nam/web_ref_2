@@ -15,10 +15,13 @@
       {% for field in form %}
         <div class="mt-2">
           {{ field.errors }}
-          <label class="label mr-4">
-            {{ field.label }}：
+          <label class="label mr-4 position-relative">
+            {{ field.label }}
+              {% if field.field.required %}
+                <small><span class="badge rounded-pill bg-danger">必須</span></small>
+              {% endif %}
           </label>
-          {{ field }}
+          ：{{ field }}
         </div>
         {% endfor %}
 
