@@ -43,10 +43,6 @@
       家計簿アプリ</a></div>
     <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
       <div class="container-fluid">
-        {% comment %} <a class="navbar-brand" href="#">Navbar</a> {% endcomment %}
-        {% comment %} <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> {% endcomment %}
         <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
           <ul style="width:100%" class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -58,7 +54,7 @@
           </ul>
 
           <ul class="navbar-nav">
-            {% if user.is_authenticated %}
+            {% comment %} {% if user.is_authenticated %}
             <li class="nav-item dropdown">
               <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 logined : "{{ user.account_id }}"
@@ -67,12 +63,12 @@
                 <li><a class="dropdown-item" href="{% url 'accounts:mypage' %}">マイページ</a></li>
                 <li><a class="dropdown-item" href="/logout?next=">ログアウト</a></li>
               </ul>
-            </li>
-            {% else %}
+            </li> {% endcomment %}
+            {% comment %} {% else %} {% endcomment %}
             <li class="nav-item nav-link ms-auto fw-bold">
               logouted
             </li>
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
           </ul>
         </div>
       </div>
@@ -95,7 +91,7 @@
     {% endif %}
   </div>
 
-  <div class="container mx-auto text-center">
+  <div class="container">
         {% block content %}{% endblock %}
   </div>
 
