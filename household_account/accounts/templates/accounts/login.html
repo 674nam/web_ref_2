@@ -1,12 +1,11 @@
 {% extends 'accounts/base.html' %}
 
 {% block title %}
-  <div class="h2">ログインページ</div>
+  <div class="h3 text-center">ログインページ</div>
 {% endblock %}
 
 {% block content %}
-  <br>
-  <div style="width:40%" class="mx-auto text-center">
+  <div style="width:40%" class="mt-5 mx-auto text-center">
     <form method="post">
       {% csrf_token %}
       {{ form.non_field_errors }}
@@ -19,7 +18,7 @@
         {% endfor %}
 
       <div class="mt-3 mx-auto text-center">
-        <button type="submit" class="btn btn-primary">ログイン</button>
+        <button type="submit" class="btn btn-primary">ログイン</button>&emsp;
         <a href="{% url 'accounts:signup' %}" class="btn btn-success">サインアップ</a>
       </div>
     </form>

@@ -18,6 +18,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <style>
+  .h1 {
+  margin-top: 10px;
+  margin-left: 30px;
+  font-size:20pt;  /* 文字サイズ固定 */
+  }
   /* 各要素の階層設定 */
   .navbar {
   position: relative;
@@ -41,10 +46,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <h2>
-      <a href="{% url 'money:payment_list' %}" class="header-title">家計簿アプリ</a>
-    </h2>
+  <header>
+    <div style="width:200px" class="h1 pb-1 text-center border border-success border-4 rounded-4">
+      <a href="{% url 'money:payment_list' %}" class="link-success link-offset-2 link-underline link-underline-opacity-0">
+      家計簿アプリ</a></div>
 
     <nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
       <div class="container-fluid">
@@ -90,7 +95,7 @@
     </nav>
   </header>
 
-  <div class="layout mx-auto text-center">
+  <div class="layout">
       {% block title %}{% endblock %}
   </div>
 

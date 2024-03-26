@@ -65,8 +65,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         Family,
         verbose_name=_("家名"),
         on_delete=models.CASCADE,
+        default=None,  # デフォルト値
         null=True,
-        default=None  # デフォルト値
+        blank=True
     )
     first_name = models.CharField(
         verbose_name=_("名前"),

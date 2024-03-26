@@ -1,14 +1,14 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-  <div class="h2">{{ page_title }}</div>
+  <div class="h3 text-center">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
   <div class="mt-5 mx-auto text-center">
     <p><a href="{% url 'accounts:familyregister' %}" >家名の登録ページへ</a></p>
   </div>
-  <div style="width:40%" class="mx-auto text-start">
+  <div style="width:40%" class="mx-auto text-center">
     <form method="POST">
       {% csrf_token %}
       {{ form.non_field_errors }}

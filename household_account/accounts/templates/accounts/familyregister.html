@@ -1,12 +1,11 @@
 {% extends 'accounts/base.html' %}
 
 {% block title %}
-  <div class="h2">家名登録ページ</div>
+  <div class="h2 text-center">家名登録ページ</div>
 {% endblock %}
 
 {% block content %}
-  <br>
-  <form method="POST">
+  <form method="POST" class="mt-5">
     {% csrf_token %}
       {{ form }}
   </form>

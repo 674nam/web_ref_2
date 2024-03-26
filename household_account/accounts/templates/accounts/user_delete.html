@@ -1,12 +1,12 @@
 {% extends 'money/base.html' %}
 
 {% block title %}
-  <div class="h2">{{ page_title }}</div>
+  <div class="h3 text-center">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
   <p class="mt-2 mx-auto text-center">以下ユーザー情報を削除し、退会しますか？</p>
-  <div style="width:50%" class="mt-5 mx-auto text-center">
+  <div style="width:50%" class="mx-auto text-center">
     <table class="table">
       <tr><th class='text-end'>account_id：</th><td class='text-start'>{{ object.account_id }}</td></tr>
       <tr><th class='text-end'>email：</th><td class='text-start'>{{ object.email }}</td></tr>
