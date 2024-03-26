@@ -21,6 +21,11 @@ class SignupView(CreateView):
     template_name = "accounts/signup.html"
     success_url = reverse_lazy("money:payment_list") # ユーザー作成後のリダイレクト先
 
+    def get_context_data(self, **kwargs): # オーバーライド
+        context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
+        context['page_title'] = 'ユーザー登録' # contextに追加
+        return context
+
     def form_valid(self, form): # ユーザー作成後にそのままログイン状態にする
         response = super().form_valid(form)
         account_id = form.cleaned_data.get("account_id")
@@ -54,7 +59,7 @@ class MyPageList(LoginRequiredMixin, ListView):
 
 # ユーザー情報更新
 class UserUpdate(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/user_update.html'
+    template_name = 'accounts/signup.html'
     model = User
     form_class = SignUpForm
     success_url = reverse_lazy("accounts:mypage") # ユーザー更新後のリダイレクト先

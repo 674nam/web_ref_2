@@ -1,7 +1,8 @@
 {% extends 'money/base.html' %}
+{% comment %} moneyアプリのbase.htmlを継承 {% endcomment %}
 
 {% block title %}
-  <div class="h3 text-center">ユーザー登録</div>
+  <div class="h3 text-center">{{ page_title }}</div>
 {% endblock %}
 
 {% block content %}
@@ -26,7 +27,11 @@
         {% endfor %}
 
       <div class="mt-3 mx-auto text-center">
+        {% if user.is_authenticated %}
+        <button type="submit" class="btn btn-primary">更新</button>&emsp;
+        {% else %}
         <button type="submit" class="btn btn-primary">登録</button>&emsp;
+        {% endif %}
         <a href="{% url 'accounts:login' %}" class="btn btn-secondary">戻る</a>
       </div>
     </form>
