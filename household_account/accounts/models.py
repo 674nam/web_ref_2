@@ -64,7 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     family_name = models.ForeignKey(
         Family,
         verbose_name=_("家名"),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         default=None,  # デフォルト値
         null=True,
         blank=True

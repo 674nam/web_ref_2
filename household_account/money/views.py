@@ -458,10 +458,11 @@ class TransitionView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs) # 親クラスの get_context_dataメソッドを実行
         context['page_title'] = '月間推移'
         login_user = self.request.user  # ログイン中のユーザーを取得
+
+        # 支出推移
         payment_queryset = Payment.objects.filter(account_id=login_user)
         if not payment_queryset:
             return context # QuerySetが何もない時はcontextを返す
-        # 支出推移
         df_payment = read_frame(payment_queryset,
                                 fieldnames=['date', 'price'])
         # 日付をdatetime化、Y/m表記に変換
@@ -474,6 +475,8 @@ class TransitionView(LoginRequiredMixin, TemplateView):
 
         # 収入推移
         income_queryset = Income.objects.filter(account_id=login_user)
+        if not income_queryset:
+            return context # QuerySetが何もない時はcontextを返す
         df_income = read_frame(income_queryset,
                                 fieldnames=['date', 'price'])
         df_income['date'] = pd.to_datetime(df_income['date'])
